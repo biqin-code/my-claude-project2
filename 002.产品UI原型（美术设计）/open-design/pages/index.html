@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velvet Ledger - 个人财务管家</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, var(--bg) 0%, var(--surface-low) 100%);
+      min-height: 100vh;
+    }
+
+    .index-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .index-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+      padding: var(--space-8) 0;
+    }
+
+    .index-logo {
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto var(--space-6);
+      box-shadow: var(--elev-3);
+    }
+
+    .index-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-2);
+    }
+
+    .index-subtitle {
+      font-size: var(--text-base);
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-6);
+    }
+
+    .index-actions {
+      display: flex;
+      gap: var(--space-4);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .index-action-btn {
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--text-base);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .index-action-primary {
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border: none;
+    }
+
+    .index-action-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--elev-3);
+    }
+
+    .index-action-secondary {
+      background: var(--surface);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+    }
+
+    .index-action-secondary:hover {
+      border-color: var(--primary);
+    }
+
+    .index-screens {
+      margin-top: var(--space-12);
+    }
+
+    .index-screens-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .screen-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-decoration: none;
+      transition: all var(--motion-fast) var(--ease-out);
+      border: 1px solid transparent;
+    }
+
+    .screen-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--elev-2);
+      border-color: var(--primary);
+    }
+
+    .screen-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--surface-low);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: var(--space-3);
+    }
+
+    .screen-card-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .screen-card-desc {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .screen-card.auth {
+      border: 2px dashed var(--outline-variant);
+    }
+
+    .index-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      margin-top: var(--space-12);
+      padding: var(--space-8);
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+    }
+
+    .feature-item {
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: var(--space-3);
+    }
+
+    .feature-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .feature-desc {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    @media (max-width: 768px) {
+      .index-features {
+        grid-template-columns: 1fr;
+      }
+      .screens-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="index-container">
+    <!-- Header -->
+    <div class="index-header">
+      <div class="index-logo">💰</div>
+      <h1 class="index-title">Velvet Ledger</h1>
+      <p class="index-subtitle">个人财务管家 · 空灵极简主义设计</p>
+      <div class="index-actions">
+        <a href="login.html" class="index-action-btn index-action-secondary">
+          🔐 登录
+        </a>
+        <a href="register.html" class="index-action-btn index-action-primary">
+          ✨ 立即开始
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="index-features">
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">智能统计</div>
+        <div class="feature-desc">环形图、折线图多维分析消费分布</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">预算管理</div>
+        <div class="feature-desc">设定月度预算，超支预警提醒</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">☁️</div>
+        <div class="feature-title">数据安全</div>
+        <div class="feature-desc">本地存储，备份导出安心无忧</div>
+      </div>
+    </div>
+
+    <!-- Screens -->
+    <div class="index-screens">
+      <h2 class="index-screens-title">应用页面预览</h2>
+      <div class="screens-grid">
+        <a href="home.html" class="screen-card">
+          <div class="screen-card-icon">🏠</div>
+          <div class="screen-card-title">首页仪表盘</div>
+          <div class="screen-card-desc">月度收支概览、预算进度、最近交易</div>
+        </a>
+        <a href="add-expense.html" class="screen-card">
+          <div class="screen-card-icon">➕</div>
+          <div class="screen-card-title">记一笔</div>
+          <div class="screen-card-desc">快速记账、金额键盘、分类选择</div>
+        </a>
+        <a href="records.html" class="screen-card">
+          <div class="screen-card-icon">📋</div>
+          <div class="screen-card-title">消费明细</div>
+          <div class="screen-card-desc">记录列表、筛选搜索、编辑删除</div>
+        </a>
+        <a href="statistics.html" class="screen-card">
+          <div class="screen-card-icon">📈</div>
+          <div class="screen-card-title">支出统计</div>
+          <div class="screen-card-desc">分类占比图、消费趋势、日均分析</div>
+        </a>
+        <a href="budget.html" class="screen-card">
+          <div class="screen-card-icon">💵</div>
+          <div class="screen-card-title">预算管理</div>
+          <div class="screen-card-desc">总预算设置、分类预算、超支预警</div>
+        </a>
+        <a href="categories.html" class="screen-card">
+          <div class="screen-card-icon">📁</div>
+          <div class="screen-card-title">分类管理</div>
+          <div class="screen-card-desc">自定义收支分类、Emoji 图标</div>
+        </a>
+        <a href="profile.html" class="screen-card">
+          <div class="screen-card-icon">👤</div>
+          <div class="screen-card-title">个人中心</div>
+          <div class="screen-card-desc">用户资料、数据备份、应用设置</div>
+        </a>
+        <a href="login.html" class="screen-card auth">
+          <div class="screen-card-icon">🔐</div>
+          <div class="screen-card-title">登录页</div>
+          <div class="screen-card-desc">用户认证、保护财务数据安全</div>
+        </a>
+        <a href="register.html" class="screen-card auth">
+          <div class="screen-card-icon">✨</div>
+          <div class="screen-card-title">注册页</div>
+          <div class="screen-card-desc">创建账号、开始记账之旅</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:var(--space-12);padding:var(--space-6);color:var(--on-surface-variant);font-size:var(--text-sm);">
+      <p>Velvet Ledger v1.0.1 · 采用 Velvet Design System</p>
+      <p style="margin-top:var(--space-2);">空灵极简主义 · 柔和粉色/紫色调 · 毛玻璃效果</p>
+    </div>
+  </div>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 如果已登录，跳转到首页
+      if (VelvetApp.Auth.isLoggedIn()) {
+        VelvetApp.navigateTo('home.html');
+      }
+    });
+  </script>
+</body>
+</html>

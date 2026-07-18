@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--surface-low) 100%);
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      padding: var(--space-6);
+    }
+
+    .auth-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .auth-logo-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: var(--space-4);
+      box-shadow: var(--elev-3);
+    }
+
+    .auth-logo-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .auth-logo-subtitle {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: var(--elev-2);
+    }
+
+    .auth-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--on-surface);
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-4) 0;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--outline-variant);
+    }
+
+    .auth-divider span {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: var(--space-6);
+    }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .demo-hint {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      background: var(--surface-low);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">💰</div>
+      <h1 class="auth-logo-title">Velvet Ledger</h1>
+      <p class="auth-logo-subtitle">个人财务管家</p>
+    </div>
+
+    <div class="auth-card">
+      <h2 class="auth-title">欢迎回来</h2>
+
+      <form class="auth-form" id="loginForm">
+        <div class="field">
+          <label for="username">用户名</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="请输入用户名"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">密码</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="请输入密码"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="button" class="btn btn-primary btn-lg" style="width:100%;margin-top:var(--space-2);" id="loginBtn">
+          登录
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        还没有账号？<a href="register.html">立即注册</a>
+      </div>
+
+      <div class="demo-hint">
+        💡 演示模式：注册后即可体验完整功能
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 如果已登录，直接跳转
+      if (VelvetApp.Auth.isLoggedIn()) {
+        VelvetApp.navigateTo('home.html');
+        return;
+      }
+
+      const loginBtn = document.getElementById('loginBtn');
+
+      loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!username || !password) {
+          VelvetApp.showToast('请填写用户名和密码', 'error');
+          return;
+        }
+
+        const result = VelvetApp.Auth.login(username, password);
+        console.log('Login result:', result);
+
+        if (result.success) {
+          VelvetApp.showToast('登录成功', 'success');
+          setTimeout(() => {
+            VelvetApp.navigateTo('home.html');
+          }, 500);
+        } else {
+          VelvetApp.showToast(result.message || '登录失败', 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

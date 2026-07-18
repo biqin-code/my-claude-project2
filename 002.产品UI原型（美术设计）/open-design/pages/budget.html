@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预算 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .budget-header {
+      margin-bottom: var(--space-6);
+    }
+
+    .budget-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-2);
+    }
+
+    .budget-subtitle {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .budget-overview {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .budget-ring-wrap {
+      flex-shrink: 0;
+    }
+
+    .budget-info {
+      flex: 1;
+    }
+
+    .budget-amount-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+
+    .budget-amount-label {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .budget-amount-value {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .budget-amount-value.spent { color: var(--error); }
+    .budget-amount-value.remaining { color: var(--success); }
+
+    .budget-progress {
+      height: 10px;
+      background: var(--surface-low);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: var(--space-4) 0;
+    }
+
+    .budget-progress-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width var(--motion-slow) var(--ease-out);
+    }
+
+    .budget-tip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--surface-low);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .budget-tip-icon { font-size: 18px; }
+
+    .budget-section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+
+    .budget-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+
+    .budget-section-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .category-budget-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .category-budget-item {
+      padding: var(--space-3);
+      background: var(--surface-low);
+      border-radius: var(--radius-md);
+    }
+
+    .category-budget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+
+    .category-budget-name {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .category-budget-amounts {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    .category-budget-bar {
+      height: 6px;
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .category-budget-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width var(--motion-slow) var(--ease-out);
+    }
+
+    .category-budget-fill.normal { background: var(--primary); }
+    .category-budget-fill.warning { background: var(--warn); }
+    .category-budget-fill.danger { background: var(--error); }
+
+    .category-budget-edit {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      background: transparent;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--on-surface-variant);
+      transition: all var(--motion-fast) var(--ease-out);
+    }
+
+    .category-budget-edit:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .total-budget-input {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .total-budget-input input {
+      flex: 1;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      color: var(--on-surface);
+      background: var(--surface-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+    }
+
+    .total-budget-input input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .empty-budget {
+      text-align: center;
+      padding: var(--space-8);
+      color: var(--on-surface-variant);
+    }
+
+    .empty-budget-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-3);
+      opacity: 0.5;
+    }
+
+    .quick-add {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--elev-3);
+      cursor: pointer;
+      z-index: 90;
+      transition: all var(--motion-fast) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .quick-add:hover {
+      transform: scale(1.08);
+    }
+
+    .edit-budget-modal .field {
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <!-- Desktop Navigation -->
+  <nav class="nav-desktop">
+    <div class="nav-brand">
+      <div class="nav-brand-logo">💰</div>
+      <span class="nav-brand-name">Velvet</span>
+    </div>
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+      首页
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+      明细
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+      统计
+    </a>
+    <a href="budget.html" class="nav-item active">
+      <span class="nav-item-icon">💰</span>
+      预算
+    </a>
+    <a href="categories.html" class="nav-item">
+      <span class="nav-item-icon">📁</span>
+      分类
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-item-icon">👤</span>
+      我的
+    </a>
+  </nav>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="nav-mobile">
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+    </a>
+    <a href="add-expense.html" class="nav-item" style="transform:translateY(-20px);">
+      <span class="nav-item-icon" style="width:56px;height:56px;background:linear-gradient(135deg, var(--primary), var(--tertiary));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:28px;">+</span>
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-item-icon">👤</span>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-with-nav">
+    <div class="page-content">
+      <div class="budget-header">
+        <h1 class="budget-title">预算管理</h1>
+        <p class="budget-subtitle" id="budgetSubtitle">设定月度预算，控制支出</p>
+      </div>
+
+      <!-- Overview -->
+      <div class="budget-overview" id="budgetOverview">
+        <div class="budget-ring-wrap" id="budgetRing"></div>
+        <div class="budget-info">
+          <div class="budget-amount-row">
+            <span class="budget-amount-label">已花费</span>
+            <span class="budget-amount-value spent" id="spentValue">¥0</span>
+          </div>
+          <div class="budget-amount-row">
+            <span class="budget-amount-label">剩余可用</span>
+            <span class="budget-amount-value remaining" id="remainingValue">¥0</span>
+          </div>
+          <div class="budget-progress">
+            <div class="budget-progress-fill" id="budgetProgressFill" style="width:0%"></div>
+          </div>
+          <div class="budget-tip" id="budgetTip">
+            <span class="budget-tip-icon">💡</span>
+            <span id="budgetTipText">设置预算开始管理你的支出</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Budget Setting -->
+      <div class="budget-section">
+        <div class="budget-section-header">
+          <h2 class="budget-section-title">月度总预算</h2>
+        </div>
+        <div class="total-budget-input">
+          <span style="color:var(--on-surface-variant);">¥</span>
+          <input type="number" id="totalBudgetInput" placeholder="输入月度预算金额" min="0" step="100">
+          <button class="btn btn-primary" id="saveTotalBudgetBtn">保存</button>
+        </div>
+      </div>
+
+      <!-- Category Budgets -->
+      <div class="budget-section">
+        <div class="budget-section-header">
+          <h2 class="budget-section-title">分类预算</h2>
+        </div>
+        <div class="category-budget-list" id="categoryBudgetList">
+          <div class="empty-budget">
+            <div class="empty-budget-icon">📊</div>
+            <p>设置分类预算，追踪各类支出</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Edit Category Budget Modal -->
+  <div class="modal-overlay" id="editCategoryModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="editCategoryTitle">设置分类预算</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('editCategoryModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="categoryBudgetAmount">预算金额</label>
+          <input type="number" id="categoryBudgetAmount" placeholder="输入预算金额" min="0">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('editCategoryModal')">取消</button>
+        <button type="button" class="btn btn-primary" id="saveCategoryBudgetBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <a href="add-expense.html" class="quick-add">+</a>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // requireAuth disabled for demo
+
+      let budgets = VelvetApp.Auth.getUserBudgets();
+      const categories = VelvetApp.Auth.getUserCategories();
+      let editingCategoryId = null;
+
+      loadBudget();
+
+      // 保存总预算
+      document.getElementById('saveTotalBudgetBtn').addEventListener('click', () => {
+        const amount = parseFloat(document.getElementById('totalBudgetInput').value) || 0;
+        budgets.total = amount;
+        VelvetApp.Auth.saveBudgets(budgets);
+        VelvetApp.showToast('预算已保存', 'success');
+        loadBudget();
+      });
+
+      // 保存分类预算
+      document.getElementById('saveCategoryBudgetBtn').addEventListener('click', () => {
+        const amount = parseFloat(document.getElementById('categoryBudgetAmount').value) || 0;
+        if (editingCategoryId) {
+          if (!budgets.categories) budgets.categories = {};
+          budgets.categories[editingCategoryId] = amount;
+          VelvetApp.Auth.saveBudgets(budgets);
+          VelvetApp.showToast('分类预算已保存', 'success');
+          VelvetApp.hideModal('editCategoryModal');
+          loadBudget();
+        }
+      });
+
+      function loadBudget() {
+        const records = VelvetApp.Auth.getUserRecords();
+        const progress = VelvetApp.calculateBudgetProgress(budgets, records, 'month');
+        const { total } = progress;
+
+        // 更新概览
+        document.getElementById('spentValue').textContent = '¥' + VelvetApp.formatCurrency(total.spent);
+        document.getElementById('remainingValue').textContent = '¥' + VelvetApp.formatCurrency(total.remaining);
+
+        const progressFill = document.getElementById('budgetProgressFill');
+        progressFill.style.width = total.percentage + '%';
+        progressFill.className = 'budget-progress-fill';
+        if (total.isOverBudget) progressFill.classList.add('danger');
+        else if (total.isWarning) progressFill.classList.add('warning');
+        else progressFill.classList.add('normal');
+
+        // 更新环形图
+        const ringColor = total.isOverBudget ? 'var(--error)' : total.isWarning ? 'var(--warn)' : 'var(--primary)';
+        document.getElementById('budgetRing').innerHTML = VelvetApp.createRingProgress(total.percentage, {
+          size: 100,
+          strokeWidth: 8,
+          color: ringColor
+        });
+
+        // 更新提示
+        if (total.budget === 0) {
+          document.getElementById('budgetTipText').textContent = '设置预算开始管理你的支出';
+        } else if (total.isOverBudget) {
+          document.getElementById('budgetTipText').textContent = '⚠️ 已超支！注意控制消费';
+        } else if (total.isWarning) {
+          document.getElementById('budgetTipText').textContent = '⚠️ 预算使用超过80%，注意控制';
+        } else {
+          document.getElementById('budgetTipText').textContent = `💡 建议每日花费 ¥${VelvetApp.formatCurrency(total.dailyBudget)}`;
+        }
+
+        // 更新总预算输入
+        document.getElementById('totalBudgetInput').value = budgets.total || '';
+
+        // 更新分类预算列表
+        renderCategoryBudgets(categories.expense, progress.categories);
+      }
+
+      function renderCategoryBudgets(expenseCategories, categoryProgress) {
+        const listEl = document.getElementById('categoryBudgetList');
+
+        const html = expenseCategories.slice(0, 10).map(cat => {
+          const progress = categoryProgress[cat.id] || { budget: budgets.categories?.[cat.id] || 0, spent: 0, percentage: 0, isOverBudget: false, isWarning: false };
+          const budget = budgets.categories?.[cat.id] || 0;
+
+          let statusClass = 'normal';
+          if (progress.isOverBudget) statusClass = 'danger';
+          else if (progress.isWarning) statusClass = 'warning';
+
+          return `
+            <div class="category-budget-item">
+              <div class="category-budget-header">
+                <span class="category-budget-name">
+                  <span>${cat.emoji}</span>
+                  <span>${cat.name}</span>
+                </span>
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <span class="category-budget-amounts">
+                    ¥${VelvetApp.formatCurrency(progress.spent)} / ¥${VelvetApp.formatCurrency(budget || progress.budget)}
+                  </span>
+                  <button class="category-budget-edit" onclick="editCategoryBudget('${cat.id}', '${cat.name}', ${budget || progress.budget})">编辑</button>
+                </div>
+              </div>
+              <div class="category-budget-bar">
+                <div class="category-budget-fill ${statusClass}" style="width:${Math.min(progress.percentage, 100)}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        listEl.innerHTML = html || `
+          <div class="empty-budget">
+            <div class="empty-budget-icon">📊</div>
+            <p>设置分类预算，追踪各类支出</p>
+          </div>
+        `;
+      }
+
+      function editCategoryBudget(catId, catName, currentBudget) {
+        editingCategoryId = catId;
+        document.getElementById('editCategoryTitle').textContent = `${catName} 预算`;
+        document.getElementById('categoryBudgetAmount').value = currentBudget || '';
+        VelvetApp.showModal('editCategoryModal');
+      }
+    });
+  </script>
+</body>
+</html>

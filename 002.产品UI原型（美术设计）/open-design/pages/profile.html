@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-6);
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+    }
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .profile-signature {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-2);
+    }
+
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .profile-stat {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-align: center;
+    }
+
+    .profile-stat-value {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .profile-stat-label {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    .settings-section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+    }
+
+    .settings-section-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface-low);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--outline-variant);
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-out);
+    }
+
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-item:hover {
+      background: var(--surface-low);
+    }
+
+    .settings-item-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .settings-item-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--surface-low);
+    }
+
+    .settings-item-info {
+      flex: 1;
+    }
+
+    .settings-item-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--on-surface);
+    }
+
+    .settings-item-desc {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    .settings-item-right {
+      color: var(--on-surface-variant);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--outline-variant);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-out);
+    }
+
+    .toggle-switch.active {
+      background: var(--primary);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: var(--radius-full);
+      transition: transform var(--motion-fast) var(--ease-out);
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(20px);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      font-weight: 500;
+      background: transparent;
+      color: var(--error);
+      border: none;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .logout-btn:hover {
+      background: var(--error-container);
+    }
+
+    .quick-add {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--elev-3);
+      cursor: pointer;
+      z-index: 90;
+      transition: all var(--motion-fast) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .quick-add:hover {
+      transform: scale(1.08);
+    }
+
+    .version-info {
+      text-align: center;
+      padding: var(--space-6);
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    @media (max-width: 480px) {
+      .profile-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Desktop Navigation -->
+  <nav class="nav-desktop">
+    <div class="nav-brand">
+      <div class="nav-brand-logo">💰</div>
+      <span class="nav-brand-name">Velvet</span>
+    </div>
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+      首页
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+      明细
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+      统计
+    </a>
+    <a href="budget.html" class="nav-item">
+      <span class="nav-item-icon">💰</span>
+      预算
+    </a>
+    <a href="categories.html" class="nav-item">
+      <span class="nav-item-icon">📁</span>
+      分类
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-item-icon">👤</span>
+      我的
+    </a>
+  </nav>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="nav-mobile">
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+    </a>
+    <a href="add-expense.html" class="nav-item" style="transform:translateY(-20px);">
+      <span class="nav-item-icon" style="width:56px;height:56px;background:linear-gradient(135deg, var(--primary), var(--tertiary));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:28px;">+</span>
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-item-icon">👤</span>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-with-nav">
+    <div class="page-content">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">用户</div>
+          <div class="profile-signature" id="profileSignature">记录美好生活</div>
+          <span class="profile-badge">🌟 高级会员</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="statDays">0</div>
+          <div class="profile-stat-label">记账天数</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="statRecords">0</div>
+          <div class="profile-stat-label">记录笔数</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="statCategories">0</div>
+          <div class="profile-stat-label">自定义分类</div>
+        </div>
+      </div>
+
+      <!-- Account Settings -->
+      <div class="settings-section">
+        <div class="settings-section-title">账户安全</div>
+        <div class="settings-item" onclick="showChangePasswordModal()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">🔐</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">修改密码</div>
+              <div class="settings-item-desc">更新您的登录密码</div>
+            </div>
+          </div>
+          <div class="settings-item-right">›</div>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="settings-section">
+        <div class="settings-section-title">数据管理</div>
+        <div class="settings-item" onclick="VelvetApp.exportToExcel()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">📊</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">导出数据</div>
+              <div class="settings-item-desc">导出为 Excel 表格</div>
+            </div>
+          </div>
+          <div class="settings-item-right">›</div>
+        </div>
+        <div class="settings-item" onclick="VelvetApp.backupData()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">☁️</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">备份数据</div>
+              <div class="settings-item-desc" id="lastBackupTime">点击立即备份</div>
+            </div>
+          </div>
+          <div class="settings-item-right">›</div>
+        </div>
+      </div>
+
+      <!-- App Settings -->
+      <div class="settings-section">
+        <div class="settings-section-title">应用设置</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">🌐</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">语言</div>
+              <div class="settings-item-desc">简体中文</div>
+            </div>
+          </div>
+          <div class="settings-item-right">›</div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">🌙</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">深色模式</div>
+              <div class="settings-item-desc">跟随系统</div>
+            </div>
+          </div>
+          <div class="settings-item-right">
+            <div class="toggle-switch" id="darkModeToggle"></div>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-icon">🔔</div>
+            <div class="settings-item-info">
+              <div class="settings-item-title">记账提醒</div>
+              <div class="settings-item-desc">每日 20:00</div>
+            </div>
+          </div>
+          <div class="settings-item-right">
+            <div class="toggle-switch active" id="reminderToggle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <div class="settings-section">
+        <button class="logout-btn" onclick="handleLogout()">
+          退出登录
+        </button>
+      </div>
+
+      <!-- Version -->
+      <div class="version-info">
+        Velvet Ledger v1.0.1 · 个人财务管家
+      </div>
+    </div>
+  </main>
+
+  <!-- Change Password Modal -->
+  <div class="modal-overlay" id="changePasswordModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">修改密码</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('changePasswordModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="oldPassword">原密码</label>
+          <input type="password" id="oldPassword" placeholder="输入原密码">
+        </div>
+        <div class="field" style="margin-top:var(--space-4);">
+          <label for="newPassword">新密码</label>
+          <input type="password" id="newPassword" placeholder="输入新密码（至少6位）">
+        </div>
+        <div class="field" style="margin-top:var(--space-4);">
+          <label for="confirmNewPassword">确认新密码</label>
+          <input type="password" id="confirmNewPassword" placeholder="再次输入新密码">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('changePasswordModal')">取消</button>
+        <button type="button" class="btn btn-primary" onclick="saveNewPassword()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">确认退出</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('logoutModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p>确定要退出登录吗？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('logoutModal')">取消</button>
+        <button type="button" class="btn btn-primary" style="background:var(--error);" onclick="confirmLogout()">退出</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <a href="add-expense.html" class="quick-add">+</a>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // requireAuth disabled for demo
+
+      const user = VelvetApp.Auth.getCurrentUser();
+      document.getElementById('profileName').textContent = user.username;
+
+      // 加载统计数据
+      loadStats();
+
+      // 加载上次备份时间
+      const lastBackup = localStorage.getItem('velvet_last_backup');
+      if (lastBackup) {
+        const date = new Date(lastBackup);
+        const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+        document.getElementById('lastBackupTime').textContent = `上次备份: ${dateStr}`;
+      }
+
+      // 深色模式开关
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      darkModeToggle.addEventListener('click', () => {
+        darkModeToggle.classList.toggle('active');
+      });
+
+      // 提醒开关
+      const reminderToggle = document.getElementById('reminderToggle');
+      reminderToggle.addEventListener('click', () => {
+        reminderToggle.classList.toggle('active');
+        VelvetApp.showToast(reminderToggle.classList.contains('active') ? '已开启提醒' : '已关闭提醒', 'success');
+      });
+    });
+
+    function loadStats() {
+      const records = VelvetApp.Auth.getUserRecords();
+      const categories = VelvetApp.Auth.getUserCategories();
+      const user = VelvetApp.Auth.getCurrentUser();
+
+      // 记账天数
+      const dates = [...new Set(records.map(r => VelvetApp.formatDate(r.date)))];
+      const days = dates.length;
+
+      // 自定义分类数
+      const defaultExpenseIds = VelvetApp.DEFAULT_EXPENSE_CATEGORIES.map(c => c.id);
+      const defaultIncomeIds = VelvetApp.DEFAULT_INCOME_CATEGORIES.map(c => c.id);
+      const customCount = categories.expense.filter(c => !defaultExpenseIds.includes(c.id)).length +
+                          categories.income.filter(c => !defaultIncomeIds.includes(c.id)).length;
+
+      document.getElementById('statDays').textContent = days;
+      document.getElementById('statRecords').textContent = records.length;
+      document.getElementById('statCategories').textContent = customCount;
+    }
+
+    function showChangePasswordModal() {
+      document.getElementById('oldPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      VelvetApp.showModal('changePasswordModal');
+    }
+
+    function saveNewPassword() {
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+      if (!oldPassword) {
+        VelvetApp.showToast('请输入原密码', 'warn');
+        return;
+      }
+
+      if (!newPassword || newPassword.length < 6) {
+        VelvetApp.showToast('新密码至少需要6位', 'warn');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        VelvetApp.showToast('两次输入的密码不一致', 'warn');
+        return;
+      }
+
+      const result = VelvetApp.Auth.changePassword(oldPassword, newPassword);
+
+      if (result.success) {
+        VelvetApp.hideModal('changePasswordModal');
+        VelvetApp.showToast('密码修改成功', 'success');
+      } else {
+        VelvetApp.showToast(result.message || '修改失败', 'error');
+      }
+    }
+
+    function handleLogout() {
+      VelvetApp.showModal('logoutModal');
+    }
+
+    function confirmLogout() {
+      VelvetApp.Auth.logout();
+      VelvetApp.showToast('已退出登录', 'success');
+      setTimeout(() => {
+        VelvetApp.navigateTo('login.html');
+      }, 500);
+    }
+  </script>
+</body>
+</html>

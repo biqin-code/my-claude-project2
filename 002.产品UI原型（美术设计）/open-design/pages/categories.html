@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分类管理 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .categories-header {
+      margin-bottom: var(--space-6);
+    }
+
+    .categories-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-2);
+    }
+
+    .categories-subtitle {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .category-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .category-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+
+    .category-section-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .category-count {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+      font-weight: normal;
+    }
+
+    .add-category-btn {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      background: var(--surface);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .add-category-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+      position: relative;
+    }
+
+    .category-card:hover {
+      background: var(--surface-container);
+      box-shadow: var(--elev-1);
+    }
+
+    .category-card.custom {
+      border: 1px dashed var(--outline-variant);
+    }
+
+    .category-card.custom:hover {
+      border-color: var(--primary);
+    }
+
+    .category-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: var(--surface-low);
+    }
+
+    .category-name {
+      font-size: var(--text-sm);
+      color: var(--on-surface);
+      text-align: center;
+    }
+
+    .category-delete {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-2);
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-full);
+      background: var(--error-container);
+      color: var(--error);
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .category-card.custom:hover .category-delete {
+      display: flex;
+    }
+
+    .category-delete:hover {
+      background: var(--error);
+      color: var(--on-error);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      text-align: center;
+      color: var(--on-surface-variant);
+    }
+
+    .quick-add {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--elev-3);
+      cursor: pointer;
+      z-index: 90;
+      transition: all var(--motion-fast) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .quick-add:hover {
+      transform: scale(1.08);
+    }
+
+    .emoji-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: var(--space-2);
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: var(--space-3);
+    }
+
+    .emoji-picker-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .emoji-picker-btn:hover {
+      background: var(--surface);
+    }
+  </style>
+</head>
+<body>
+  <!-- Desktop Navigation -->
+  <nav class="nav-desktop">
+    <div class="nav-brand">
+      <div class="nav-brand-logo">💰</div>
+      <span class="nav-brand-name">Velvet</span>
+    </div>
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+      首页
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+      明细
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+      统计
+    </a>
+    <a href="budget.html" class="nav-item">
+      <span class="nav-item-icon">💰</span>
+      预算
+    </a>
+    <a href="categories.html" class="nav-item active">
+      <span class="nav-item-icon">📁</span>
+      分类
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-item-icon">👤</span>
+      我的
+    </a>
+  </nav>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="nav-mobile">
+    <a href="home.html" class="nav-item">
+      <span class="nav-item-icon">🏠</span>
+    </a>
+    <a href="records.html" class="nav-item">
+      <span class="nav-item-icon">📋</span>
+    </a>
+    <a href="add-expense.html" class="nav-item" style="transform:translateY(-20px);">
+      <span class="nav-item-icon" style="width:56px;height:56px;background:linear-gradient(135deg, var(--primary), var(--tertiary));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:28px;">+</span>
+    </a>
+    <a href="statistics.html" class="nav-item">
+      <span class="nav-item-icon">📊</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-item-icon">👤</span>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-with-nav">
+    <div class="page-content">
+      <div class="categories-header">
+        <h1 class="categories-title">分类管理</h1>
+        <p class="categories-subtitle">自定义你的收支分类</p>
+      </div>
+
+      <!-- Expense Categories -->
+      <div class="category-section">
+        <div class="category-section-header">
+          <h2 class="category-section-title">
+            💸 支出分类
+            <span class="category-count" id="expenseCount">0 个</span>
+          </h2>
+          <button class="add-category-btn" onclick="showAddCategoryModal('expense')">
+            <span>+</span> 新增
+          </button>
+        </div>
+        <div class="category-grid" id="expenseCategoryGrid"></div>
+      </div>
+
+      <!-- Income Categories -->
+      <div class="category-section">
+        <div class="category-section-header">
+          <h2 class="category-section-title">
+            💰 收入分类
+            <span class="category-count" id="incomeCount">0 个</span>
+          </h2>
+          <button class="add-category-btn" onclick="showAddCategoryModal('income')">
+            <span>+</span> 新增
+          </button>
+        </div>
+        <div class="category-grid" id="incomeCategoryGrid"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Category Modal -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="categoryModalTitle">新增分类</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('categoryModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>图标</label>
+          <div style="display:flex;align-items:center;gap:var(--space-3);">
+            <div class="category-icon" id="selectedEmojiIcon" style="width:56px;height:56px;font-size:28px;">😀</div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="toggleEmojiPicker()">选择图标</button>
+          </div>
+          <div class="emoji-picker-grid" id="emojiPicker" style="display:none;"></div>
+        </div>
+        <div class="field" style="margin-top:var(--space-4);">
+          <label for="categoryNameInput">分类名称</label>
+          <input type="text" id="categoryNameInput" placeholder="输入分类名称" maxlength="10">
+        </div>
+        <div class="field" style="margin-top:var(--space-4);">
+          <label for="categoryDescInput">描述（选填）</label>
+          <input type="text" id="categoryDescInput" placeholder="简短描述" maxlength="30">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('categoryModal')">取消</button>
+        <button type="button" class="btn btn-primary" id="saveCategoryBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteCategoryModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">确认删除</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('deleteCategoryModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p>确定要删除分类 "<span id="deleteCategoryName"></span>" 吗？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('deleteCategoryModal')">取消</button>
+        <button type="button" class="btn btn-primary" style="background:var(--error);" id="confirmDeleteCategoryBtn">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <a href="add-expense.html" class="quick-add">+</a>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    const EMOJI_LIST = ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','😎','🤓','🧐','😕','😟','🙁','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','💋','💌','💘','💝','💖','💗','💓','💞','💕','💟','❣️','💔','❤️','🧡','💛','💚','💙','💜','🤎','🖤','💯','💢','💥','💫','💦','💨','🕳️','💣','💬','👁️','👀','👅','👄','👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄'];
+
+    let currentCategoryType = 'expense';
+    let editingCategory = null;
+    let selectedEmoji = '😀';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // requireAuth disabled for demo
+
+      loadCategories();
+
+      // 保存分类
+      document.getElementById('saveCategoryBtn').addEventListener('click', saveCategory);
+
+      // 确认删除
+      document.getElementById('confirmDeleteCategoryBtn').addEventListener('click', confirmDeleteCategory);
+    });
+
+    function loadCategories() {
+      const categories = VelvetApp.Auth.getUserCategories();
+
+      renderCategoryGrid('expenseCategoryGrid', categories.expense, 'expense');
+      renderCategoryGrid('incomeCategoryGrid', categories.income, 'income');
+
+      document.getElementById('expenseCount').textContent = categories.expense.length + ' 个';
+      document.getElementById('incomeCount').textContent = categories.income.length + ' 个';
+    }
+
+    function renderCategoryGrid(containerId, categoryList, type) {
+      const container = document.getElementById(containerId);
+
+      // 判断是否为默认分类（根据 id 判断）
+      const isCustom = (cat) => {
+        const defaultIds = type === 'expense'
+          ? VelvetApp.DEFAULT_EXPENSE_CATEGORIES.map(c => c.id)
+          : VelvetApp.DEFAULT_INCOME_CATEGORIES.map(c => c.id);
+        return !defaultIds.includes(cat.id);
+      };
+
+      let html = categoryList.map(cat => `
+        <div class="category-card ${isCustom(cat) ? 'custom' : ''}" onclick="${isCustom(cat) ? `editCategory('${type}', '${cat.id}')` : ''}">
+          <div class="category-icon">${cat.emoji}</div>
+          <div class="category-name">${cat.name}</div>
+          ${isCustom(cat) ? `<button class="category-delete" onclick="event.stopPropagation();showDeleteCategoryModal('${type}', '${cat.id}', '${cat.name}')">×</button>` : ''}
+        </div>
+      `).join('');
+
+      // 添加新增按钮
+      html += `
+        <div class="category-card custom" onclick="showAddCategoryModal('${type}')">
+          <div class="category-icon" style="background:var(--surface-low);border:2px dashed var(--outline-variant);">+</div>
+          <div class="category-name">新增</div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function showAddCategoryModal(type) {
+      currentCategoryType = type;
+      editingCategory = null;
+      selectedEmoji = '😀';
+
+      document.getElementById('categoryModalTitle').textContent = '新增分类';
+      document.getElementById('selectedEmojiIcon').textContent = selectedEmoji;
+      document.getElementById('categoryNameInput').value = '';
+      document.getElementById('categoryDescInput').value = '';
+      document.getElementById('emojiPicker').style.display = 'none';
+
+      VelvetApp.showModal('categoryModal');
+    }
+
+    function editCategory(type, catId) {
+      const categories = VelvetApp.Auth.getUserCategories();
+      const categoryList = type === 'expense' ? categories.expense : categories.income;
+      const cat = categoryList.find(c => c.id === catId);
+
+      if (!cat) return;
+
+      currentCategoryType = type;
+      editingCategory = cat;
+      selectedEmoji = cat.emoji;
+
+      document.getElementById('categoryModalTitle').textContent = '编辑分类';
+      document.getElementById('selectedEmojiIcon').textContent = selectedEmoji;
+      document.getElementById('categoryNameInput').value = cat.name;
+      document.getElementById('categoryDescInput').value = cat.description || '';
+      document.getElementById('emojiPicker').style.display = 'none';
+
+      VelvetApp.showModal('categoryModal');
+    }
+
+    function toggleEmojiPicker() {
+      const picker = document.getElementById('emojiPicker');
+      if (picker.style.display === 'none') {
+        picker.style.display = 'grid';
+        picker.innerHTML = EMOJI_LIST.map(emoji => `
+          <button class="emoji-picker-btn" onclick="selectEmoji('${emoji}')">${emoji}</button>
+        `).join('');
+      } else {
+        picker.style.display = 'none';
+      }
+    }
+
+    function selectEmoji(emoji) {
+      selectedEmoji = emoji;
+      document.getElementById('selectedEmojiIcon').textContent = emoji;
+      document.getElementById('emojiPicker').style.display = 'none';
+    }
+
+    function saveCategory() {
+      const name = document.getElementById('categoryNameInput').value.trim();
+      const description = document.getElementById('categoryDescInput').value.trim();
+
+      if (!name) {
+        VelvetApp.showToast('请输入分类名称', 'warn');
+        return;
+      }
+
+      const categories = VelvetApp.Auth.getUserCategories();
+      const categoryList = currentCategoryType === 'expense' ? categories.expense : categories.income;
+
+      if (editingCategory) {
+        // 编辑
+        const index = categoryList.findIndex(c => c.id === editingCategory.id);
+        if (index !== -1) {
+          categoryList[index].name = name;
+          categoryList[index].emoji = selectedEmoji;
+          categoryList[index].description = description;
+        }
+      } else {
+        // 新增
+        categoryList.push({
+          id: 'custom_' + Date.now(),
+          emoji: selectedEmoji,
+          name: name,
+          description: description
+        });
+      }
+
+      VelvetApp.Auth.saveCategories(categories);
+      VelvetApp.hideModal('categoryModal');
+      VelvetApp.showToast(editingCategory ? '分类已更新' : '分类已添加', 'success');
+      loadCategories();
+    }
+
+    function showDeleteCategoryModal(type, catId, catName) {
+      document.getElementById('deleteCategoryName').textContent = catName;
+      document.getElementById('confirmDeleteCategoryBtn').onclick = () => {
+        const categories = VelvetApp.Auth.getUserCategories();
+        const categoryList = type === 'expense' ? categories.expense : categories.income;
+        const filtered = categoryList.filter(c => c.id !== catId);
+
+        if (type === 'expense') {
+          categories.expense = filtered;
+        } else {
+          categories.income = filtered;
+        }
+
+        VelvetApp.Auth.saveCategories(categories);
+        VelvetApp.hideModal('deleteCategoryModal');
+        VelvetApp.showToast('分类已删除', 'success');
+        loadCategories();
+      };
+      VelvetApp.showModal('deleteCategoryModal');
+    }
+
+    function confirmDeleteCategory() {
+      // 实际删除逻辑在 showDeleteCategoryModal 中绑定
+    }
+  </script>
+</body>
+</html>

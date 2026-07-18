@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>注册 - 个人财务管家</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#685a67",
+                        "on-tertiary-container": "#845c88",
+                        "surface-container-highest": "#ffd8eb",
+                        "primary-container": "#f9e6f6",
+                        "primary-fixed-dim": "#d3c1d1",
+                        "surface": "#fff8f8",
+                        "on-secondary-container": "#795873",
+                        "surface-tint": "#685a67",
+                        "on-primary-fixed-variant": "#4f434f",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#d3c1d1",
+                        "secondary-fixed": "#ffd7f4",
+                        "primary-fixed": "#f0dded",
+                        "on-primary-container": "#746673",
+                        "inverse-on-surface": "#ffecf3",
+                        "tertiary-container": "#ffe3fd",
+                        "surface-dim": "#fbcee4",
+                        "secondary": "#75546e",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#ffe0ee",
+                        "outline-variant": "#cdc4ca",
+                        "on-surface-variant": "#4b454a",
+                        "tertiary-fixed": "#ffd6ff",
+                        "secondary-container": "#fed3f3",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#ffd8eb",
+                        "surface-container-low": "#fff0f5",
+                        "surface-container": "#ffe8f1",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#2d1323",
+                        "inverse-surface": "#442738",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#2d1323",
+                        "background": "#fff8f8",
+                        "on-tertiary-fixed": "#2e0d34",
+                        "tertiary-fixed-dim": "#e7b7e9",
+                        "on-secondary-fixed": "#2c1229",
+                        "surface-bright": "#fff8f8",
+                        "on-primary-fixed": "#221823",
+                        "on-tertiary-fixed-variant": "#5e3963",
+                        "on-secondary-fixed-variant": "#5b3d56",
+                        "outline": "#7c757a",
+                        "tertiary": "#78517c",
+                        "secondary-fixed-dim": "#e3bad9",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "stack-lg": "40px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "gutter": "16px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "numeral-xl": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "numeral-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background: linear-gradient(135deg, #fff8f8 0%, #ffe8f1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .velvet-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px -10px rgba(243, 201, 232, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ethereal-input {
+            border-bottom: 2px solid #cdc4ca;
+            transition: border-color 0.3s ease;
+        }
+        .ethereal-input:focus {
+            outline: none;
+            border-bottom-color: #75546e;
+        }
+        .floating-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 230, 246, 0.8) 0%, rgba(255, 248, 248, 0) 70%);
+            z-index: -1;
+            filter: blur(40px);
+            animation: drift 15s infinite alternate ease-in-out;
+        }
+        @keyframes drift {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(10%, 10%); }
+        }
+    </style>
+</head>
+<body class="p-gutter">
+<!-- Atmospheric Orbs -->
+<div class="floating-orb" style="top: 10%; left: 5%;"></div>
+<div class="floating-orb" style="bottom: 15%; right: 10%; animation-delay: -5s;"></div>
+<main class="w-full max-w-[440px] z-10">
+<!-- Brand Identity -->
+<header class="text-center mb-stack-lg">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-base">个人财务管家</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">清爽理财，智慧生活</p>
+</header>
+<!-- Registration Card -->
+<section class="velvet-card rounded-xl p-stack-lg">
+<h2 class="font-title-lg text-title-lg text-secondary mb-stack-md">创建新账号</h2>
+<form action="#" class="space-y-stack-md" onsubmit="return false;">
+<!-- Username Field -->
+<div class="group">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-1" for="username">用户名</label>
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">person</span>
+<input class="w-full bg-transparent py-2 font-body-lg text-body-lg ethereal-input text-on-surface" id="username" placeholder="请输入您的用户名" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="group">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-1" for="password">密码</label>
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">lock</span>
+<input class="w-full bg-transparent py-2 font-body-lg text-body-lg ethereal-input text-on-surface" id="password" placeholder="设置登录密码" type="password"/>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="group">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-1" for="confirm_password">确认密码</label>
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<input class="w-full bg-transparent py-2 font-body-lg text-body-lg ethereal-input text-on-surface" id="confirm_password" placeholder="再次输入密码" type="password"/>
+</div>
+</div>
+<!-- Privacy Policy (Mockup) -->
+<div class="flex items-start gap-2 pt-2">
+<input class="mt-1 rounded border-outline-variant text-secondary focus:ring-secondary-container" id="terms" type="checkbox"/>
+<label class="font-body-md text-body-md text-on-surface-variant" for="terms">
+                        我已阅读并同意 <a class="text-secondary font-medium" href="#">服务协议</a> 与 <a class="text-secondary font-medium" href="#">隐私政策</a>
+</label>
+</div>
+<!-- Register Button -->
+<button class="w-full py-4 rounded-full bg-secondary text-on-secondary font-title-lg text-title-lg shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all mt-stack-md" type="submit" onclick="window.location.href='login.html'">
+                    立即注册
+                </button>
+</form>
+<!-- Login Link Container -->
+<div class="mt-stack-lg pt-stack-md border-t border-outline-variant/30 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    已有账号？
+                    <a class="inline-flex items-center gap-1 font-title-lg text-title-lg text-secondary hover:underline transition-all active:opacity-70" href="login.html">
+                        立即登录
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</p>
+</div>
+</section>
+<!-- Decorative Footer Visual -->
+<div class="mt-stack-lg flex justify-center gap-stack-md overflow-hidden opacity-40">
+<div class="h-16 w-16 rounded-lg bg-surface-container-high rotate-12 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">savings</span>
+</div>
+<div class="h-16 w-16 rounded-lg bg-surface-container-high -rotate-12 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">account_balance_wallet</span>
+</div>
+<div class="h-16 w-16 rounded-lg bg-surface-container-high rotate-6 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+</div>
+</div>
+</main>
+<!-- Side Visual Illustration (Desktop Only) -->
+<aside class="hidden lg:flex flex-col ml-stack-lg max-w-[400px]">
+<img alt="Financial Sanctuary" class="w-full h-[500px] object-cover rounded-xl shadow-2xl mb-stack-md" data-alt="A serene and minimalist desktop scene featuring a soft pink ceramic vase with a single dried flower, a stack of elegant neutral-toned notebooks, and a glass of water on a pale wooden surface. The morning sunlight filters through a sheer curtain, creating soft dappled shadows and a restorative, peaceful atmosphere. The color palette is composed of soft orchids, mauves, and petal whites, perfectly reflecting the Velvet Ledger brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5ENK8DWD-_fv0XM7VV99dtMoYlwemTP7ShIwGsxsi88tzkoe0Og7Yml-CxJcKJHPGNOjDibfdqyXQOLLJZVuxpWbF-d2wLWr26UHXBjC16cPrDOC7dvmL_jPHklaw7sF6J_9PsMORE9xi1RPt38xFyoirKfs-bQ0uYIJ7Uvsjx1Se-wGHmogqdQklGoa6i_rdIMpFP6f4499UiYSxM19wEnqHk4czuvx68anMzQvcoGfl4G8GqfrCJRtaig_MOT0eDJG23iQV9A"/>
+<div class="bg-white/40 backdrop-blur-md p-gutter rounded-xl border border-white/50">
+<h3 class="font-title-lg text-title-lg text-secondary mb-2">每一分支出，都值得被温柔记录</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                加入数千位已经开始智慧理财的用户。通过我们的“暮色绽放”界面，理财不再是冰冷的数字，而是一场自我关怀的仪式。
+            </p>
+</div>
+</aside>
+<script>
+        // Subtle interaction for input fields
+        document.querySelectorAll('.ethereal-input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.parentElement.classList.add('translate-x-1');
+                input.parentElement.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.parentElement.classList.remove('translate-x-1');
+            });
+        });
+
+        // Registration simulation
+        document.querySelector('form').addEventListener('submit', (e) => {
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = '正在为您开启财务之旅...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                btn.innerText = '欢迎加入！';
+                setTimeout(() => {
+                   btn.innerText = originalText;
+                   btn.disabled = false;
+                   btn.style.opacity = '1';
+                }, 2000);
+            }, 1500);
+        });
+    </script>
+</body></html>

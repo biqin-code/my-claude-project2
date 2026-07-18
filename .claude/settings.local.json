@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"d:/claude-workspace/claude-my-product2/001.产品PRD\\(产品经理\\)\")",
+      "Bash(node generate_prd.js)"
+    ],
+    "additionalDirectories": [
+      "d:\\claude-workspace\\claude-my-product2\\001.产品PRD(产品经理)"
+    ]
+  }
+}

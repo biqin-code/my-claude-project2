@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>分类管理 - 个人财务管家</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #fff8f8;
+            color: #2d1323;
+            margin: 0;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .velvet-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px -10px rgba(243, 201, 232, 0.25);
+        }
+        .category-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(120, 81, 124, 0.2);
+        }
+        .emoji-picker-btn {
+            transition: all 0.2s ease;
+        }
+        .emoji-picker-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#e7b7e9",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#685a67",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#f9e6f6",
+                        "inverse-primary": "#d3c1d1",
+                        "background": "#fff8f8",
+                        "surface-container-highest": "#ffd8eb",
+                        "surface-container-high": "#ffe0ee",
+                        "error": "#ba1a1a",
+                        "secondary": "#75546e",
+                        "on-primary-container": "#746673",
+                        "on-tertiary-fixed": "#2e0d34",
+                        "surface-container": "#ffe8f1",
+                        "on-primary-fixed": "#221823",
+                        "outline-variant": "#cdc4ca",
+                        "on-secondary-fixed-variant": "#5b3d56",
+                        "tertiary-container": "#ffe3fd",
+                        "on-surface-variant": "#4b454a",
+                        "on-secondary-fixed": "#2c1229",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#fbcee4",
+                        "secondary-fixed-dim": "#e3bad9",
+                        "on-secondary-container": "#795873",
+                        "inverse-on-surface": "#ffecf3",
+                        "tertiary": "#78517c",
+                        "on-primary-fixed-variant": "#4f434f",
+                        "primary-fixed": "#f0dded",
+                        "on-tertiary-container": "#845c88",
+                        "on-surface": "#2d1323",
+                        "surface-variant": "#ffd8eb",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#fed3f3",
+                        "surface-tint": "#685a67",
+                        "on-background": "#2d1323",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#d3c1d1",
+                        "outline": "#7c757a",
+                        "surface-bright": "#fff8f8",
+                        "inverse-surface": "#442738",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#5e3963",
+                        "tertiary-fixed": "#ffd6ff",
+                        "surface": "#fff8f8",
+                        "secondary-fixed": "#ffd7f4",
+                        "surface-container-low": "#fff0f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "stack-sm": "12px",
+                        "gutter": "16px",
+                        "container-padding": "20px",
+                        "stack-lg": "40px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "numeral-xl": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "numeral-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface overflow-x-hidden">
+    <!-- Sidebar Navigation -->
+    <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant/20 flex flex-col p-gutter gap-stack-md z-50">
+        <div class="mb-stack-md px-4">
+            <h1 class="font-headline-md text-headline-md font-bold text-primary">个人财务管家</h1>
+            <p class="font-body-md text-on-surface-variant opacity-70">清爽理财，智慧生活</p>
+        </div>
+        <nav class="flex-1 flex flex-col gap-2">
+            <a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-highest/20 rounded-lg px-4 py-3 transition-all active:scale-95 duration-200 cursor-pointer" href="home.html">
+                <span class="material-symbols-outlined">home</span>
+                <span class="font-body-lg text-body-lg">首页</span>
+            </a>
+            <a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-highest/20 rounded-lg px-4 py-3 transition-all active:scale-95 duration-200 cursor-pointer" href="records.html">
+                <span class="material-symbols-outlined">list_alt</span>
+                <span class="font-body-lg text-body-lg">明细</span>
+            </a>
+            <a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-highest/20 rounded-lg px-4 py-3 transition-all active:scale-95 duration-200 cursor-pointer" href="statistics.html">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="font-body-lg text-body-lg">统计</span>
+            </a>
+            <a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-highest/20 rounded-lg px-4 py-3 transition-all active:scale-95 duration-200 cursor-pointer" href="budget.html">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="font-body-lg text-body-lg">预算</span>
+            </a>
+            <!-- Active: 分类管理 -->
+            <a class="flex items-center gap-base bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-bold active:scale-95 duration-200 cursor-pointer" href="categories.html">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">category</span>
+                <span class="font-body-lg text-body-lg">分类管理</span>
+            </a>
+            <a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-highest/20 rounded-lg px-4 py-3 transition-all active:scale-95 duration-200 cursor-pointer" href="profile.html">
+                <span class="material-symbols-outlined">person</span>
+                <span class="font-body-lg text-body-lg">个人中心</span>
+            </a>
+        </nav>
+        <div class="mt-auto px-4 pb-4">
+            <button class="w-full py-4 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-all" onclick="window.location.href='add-expense.html'">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                <span>记一笔</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 min-h-screen p-stack-lg">
+        <header class="flex justify-between items-center w-full mb-stack-lg">
+            <div>
+                <h2 class="font-headline-lg text-headline-lg text-on-background">分类管理</h2>
+                <p class="font-body-lg text-body-lg text-on-surface-variant">自定义您的收支分类，让记账更高效</p>
+            </div>
+            <button onclick="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-xl font-bold flex items-center gap-2 hover:opacity-90 transition-all active:scale-95">
+                <span class="material-symbols-outlined">add</span>
+                <span>新增分类</span>
+            </button>
+        </header>
+
+        <!-- Tabs -->
+        <div class="flex gap-4 mb-stack-md bg-surface-container-low p-1.5 rounded-xl w-fit">
+            <button id="tab-income" onclick="switchTab('income')" class="px-6 py-2 rounded-lg font-label-md text-label-md transition-all duration-300 bg-white text-tertiary shadow-md">
+                💰 收入分类
+            </button>
+            <button id="tab-expense" onclick="switchTab('expense')" class="px-6 py-2 rounded-lg font-label-md text-label-md transition-all duration-300 text-on-surface-variant">
+                💸 支出分类
+            </button>
+        </div>
+
+        <!-- Categories Grid -->
+        <div id="categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+            <!-- Categories will be rendered here -->
+        </div>
+    </main>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="categoryModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 space-y-stack-md">
+            <div class="flex items-center justify-between">
+                <h3 id="modal-title" class="font-headline-md text-headline-md text-primary">新增分类</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center hover:bg-surface-container transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Category Type -->
+                <div>
+                    <label class="text-label-md text-on-surface-variant uppercase tracking-wider block mb-2">分类类型</label>
+                    <div class="flex gap-2">
+                        <button id="type-income" onclick="selectType('income')" class="flex-1 py-3 rounded-lg border-2 border-primary bg-primary-container/20 text-primary font-bold transition-all">
+                            💰 收入
+                        </button>
+                        <button id="type-expense" onclick="selectType('expense')" class="flex-1 py-3 rounded-lg border-2 border-outline-variant text-on-surface-variant transition-all">
+                            💸 支出
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Name -->
+                <div>
+                    <label class="text-label-md text-on-surface-variant uppercase tracking-wider block mb-2">分类名称</label>
+                    <input id="categoryName" type="text" placeholder="例如：餐饮、交通、工资等" class="w-full px-4 py-3 bg-surface-container-low rounded-xl border-2 border-transparent focus:border-secondary outline-none transition-colors">
+                </div>
+
+                <!-- Emoji Icon -->
+                <div>
+                    <label class="text-label-md text-on-surface-variant uppercase tracking-wider block mb-2">图标表情</label>
+                    <div class="flex items-center gap-3">
+                        <div id="selectedEmoji" class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-4xl border-2 border-outline-variant">
+                            📝
+                        </div>
+                        <div class="flex-1 grid grid-cols-8 gap-2 max-h-32 overflow-y-auto p-2 bg-surface-container-low rounded-xl">
+                            <!-- Emoji buttons will be added by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="text-label-md text-on-surface-variant uppercase tracking-wider block mb-2">描述（可选）</label>
+                    <input id="categoryDesc" type="text" placeholder="简要描述此分类" class="w-full px-4 py-3 bg-surface-container-low rounded-xl border-2 border-transparent focus:border-secondary outline-none transition-colors">
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-surface-container-low text-on-surface rounded-xl font-bold hover:bg-surface-container-high transition-colors">
+                    取消
+                </button>
+                <button onclick="saveCategory()" class="flex-1 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto bg-error-container rounded-full">
+                <span class="material-symbols-outlined text-error text-[32px]">warning</span>
+            </div>
+            <h3 class="font-headline-md text-headline-md text-center text-on-background">确认删除？</h3>
+            <p id="deleteMessage" class="text-body-lg text-body-lg text-center text-on-surface-variant">删除后无法恢复，是否继续？</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-surface-container-low text-on-surface rounded-xl font-bold hover:bg-surface-container-high transition-colors">
+                    取消
+                </button>
+                <button onclick="confirmDelete()" class="flex-1 py-3 bg-error text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
+                    删除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default categories data
+        const defaultCategories = {
+            income: [
+                { id: 1, name: '工资', emoji: '💼', desc: '每月固定工资收入' },
+                { id: 2, name: '奖金', emoji: '🎁', desc: '年终奖、季度奖等' },
+                { id: 3, name: '兼职', emoji: '💻', desc: '兼职、副业收入' },
+                { id: 4, name: '投资收益', emoji: '📈', desc: '股票、基金收益' },
+                { id: 5, name: '理财收益', emoji: '💰', desc: '银行理财、P2P收益' },
+                { id: 6, name: '红包', emoji: '🧧', desc: '节日红包、转账' },
+                { id: 7, name: '报销', emoji: '📄', desc: '公司报销款项' },
+                { id: 8, name: '租金收入', emoji: '🏠', desc: '房屋出租收入' },
+                { id: 9, name: '返现', emoji: '💳', desc: '信用卡返现、购物返利' },
+                { id: 10, name: '其他收入', emoji: '💵', desc: '其他来源收入' }
+            ],
+            expense: [
+                { id: 101, name: '餐饮', emoji: '🍜', desc: '早午晚餐、外卖' },
+                { id: 102, name: '购物', emoji: '🛍️', desc: '衣服、日用品等' },
+                { id: 103, name: '交通', emoji: '🚇', desc: '地铁、公交、打车' },
+                { id: 104, name: '娱乐', emoji: '🎮', desc: '游戏、电影、KTV' },
+                { id: 105, name: '健身', emoji: '🏋️', desc: '健身房、运动器材' },
+                { id: 106, name: '居住', emoji: '🏠', desc: '房租、水电费' },
+                { id: 107, name: '医疗', emoji: '💊', desc: '看病、买药' },
+                { id: 108, name: '教育', emoji: '📚', desc: '培训、书籍、课程' },
+                { id: 109, name: '通讯', emoji: '📱', desc: '话费、网费' },
+                { id: 110, name: '美容', emoji: '💄', desc: '护肤品、化妆品' },
+                { id: 111, name: '服饰', emoji: '👔', desc: '衣服、鞋子、配饰' },
+                { id: 112, name: '旅游', emoji: '✈️', desc: '旅行、酒店、门票' },
+                { id: 113, name: '社交', emoji: '🎉', desc: '聚会、请客' },
+                { id: 114, name: '宠物', emoji: '🐕', desc: '宠物食品、用品' },
+                { id: 115, name: '汽车', emoji: '🚗', desc: '加油、保养、停车' },
+                { id: 116, name: '家居', emoji: '🛋️', desc: '家具、家电、装修' },
+                { id: 117, name: '礼物', emoji: '🎀', desc: '送人的礼物' },
+                { id: 118, name: '零食', emoji: '🍪', desc: '零食、饮料、水果' },
+                { id: 119, name: '数码', emoji: '💻', desc: '电子产品、软件' },
+                { id: 120, name: '其他支出', emoji: '📦', desc: '其他消费' }
+            ]
+        };
+
+        // Load categories from localStorage or use defaults
+        let categories = JSON.parse(localStorage.getItem('categories')) || defaultCategories;
+        let currentTab = 'income';
+        let editingId = null;
+        let deleteId = null;
+        let selectedEmoji = '📝';
+
+        // Emoji list for picker
+        const emojiList = [
+            '💰', '💵', '💸', '🧧', '💳', '💼', '🎁', '📈',
+            '🍜', '🛍️', '🚇', '🎮', '🏋️', '🏠', '💊', '📚',
+            '📱', '💄', '👔', '✈️', '🎉', '🐕', '🚗', '🛋️',
+            '🎀', '🍪', '💻', '📦', '🍔', '☕', '🚌', '🎬',
+            '⚽', '🏥', '📖', '📞', '👗', '🏨', '🎈', '🐱',
+            '🚕', '🛏️', '🎨', '🧸', '🍕', '🍺', '🚄', '🎪',
+            '🏊', '💊', '✏️', '📺', '👟', '🏖️', '🍻', '🐰',
+            '🛵', '🚿', '📷', '🎸', '🍰', '🍵', '✈️', '🎭'
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderEmojiPicker();
+        });
+
+        // Render emoji picker
+        function renderEmojiPicker() {
+            const container = document.querySelector('.grid.grid-cols-8');
+            container.innerHTML = emojiList.map(emoji => `
+                <button type="button" onclick="selectEmoji('${emoji}')" class="emoji-picker-btn w-8 h-8 text-xl rounded hover:bg-surface-container transition-colors">
+                    ${emoji}
+                </button>
+            `).join('');
+        }
+
+        // Select emoji
+        function selectEmoji(emoji) {
+            selectedEmoji = emoji;
+            document.getElementById('selectedEmoji').textContent = emoji;
+        }
+
+        // Switch tab
+        function switchTab(tab) {
+            currentTab = tab;
+            const incomeTab = document.getElementById('tab-income');
+            const expenseTab = document.getElementById('tab-expense');
+
+            if (tab === 'income') {
+                incomeTab.classList.add('bg-white', 'text-tertiary', 'shadow-md');
+                incomeTab.classList.remove('text-on-surface-variant');
+                expenseTab.classList.remove('bg-white', 'text-tertiary', 'shadow-md');
+                expenseTab.classList.add('text-on-surface-variant');
+            } else {
+                expenseTab.classList.add('bg-white', 'text-tertiary', 'shadow-md');
+                expenseTab.classList.remove('text-on-surface-variant');
+                incomeTab.classList.remove('bg-white', 'text-tertiary', 'shadow-md');
+                incomeTab.classList.add('text-on-surface-variant');
+            }
+
+            renderCategories();
+        }
+
+        // Render categories
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            const items = categories[currentTab];
+
+            container.innerHTML = items.map(item => `
+                <div class="velvet-card category-item p-6 transition-all cursor-pointer" onclick="editCategory(${item.id})">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-primary-container/30 rounded-xl flex items-center justify-center text-3xl">
+                                ${item.emoji}
+                            </div>
+                            <div>
+                                <h4 class="font-title-lg text-title-lg text-on-background">${item.name}</h4>
+                                <p class="font-body-md text-body-md text-on-surface-variant">${item.desc || '暂无描述'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="event.stopPropagation(); editCategory(${item.id})" class="flex-1 py-2 bg-surface-container-low text-primary rounded-lg font-medium hover:bg-surface-container transition-colors">
+                            <span class="material-symbols-outlined text-[18px] align-middle mr-1">edit</span>编辑
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteCategory(${item.id})" class="flex-1 py-2 bg-error-container/20 text-error rounded-lg font-medium hover:bg-error-container/40 transition-colors">
+                            <span class="material-symbols-outlined text-[18px] align-middle mr-1">delete</span>删除
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open add modal
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modal-title').textContent = '新增分类';
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryDesc').value = '';
+            selectedEmoji = '📝';
+            document.getElementById('selectedEmoji').textContent = '📝';
+            selectType(currentTab);
+            document.getElementById('categoryModal').classList.remove('hidden');
+        }
+
+        // Edit category
+        function editCategory(id) {
+            const item = categories[currentTab].find(c => c.id === id);
+            if (!item) return;
+
+            editingId = id;
+            document.getElementById('modal-title').textContent = '编辑分类';
+            document.getElementById('categoryName').value = item.name;
+            document.getElementById('categoryDesc').value = item.desc || '';
+            selectedEmoji = item.emoji;
+            document.getElementById('selectedEmoji').textContent = item.emoji;
+            selectType(currentTab);
+            document.getElementById('categoryModal').classList.remove('hidden');
+        }
+
+        // Select type
+        function selectType(type) {
+            const incomeBtn = document.getElementById('type-income');
+            const expenseBtn = document.getElementById('type-expense');
+
+            if (type === 'income') {
+                incomeBtn.classList.add('border-primary', 'bg-primary-container/20', 'text-primary');
+                incomeBtn.classList.remove('border-outline-variant', 'text-on-surface-variant');
+                expenseBtn.classList.remove('border-primary', 'bg-primary-container/20', 'text-primary');
+                expenseBtn.classList.add('border-outline-variant', 'text-on-surface-variant');
+            } else {
+                expenseBtn.classList.add('border-primary', 'bg-primary-container/20', 'text-primary');
+                expenseBtn.classList.remove('border-outline-variant', 'text-on-surface-variant');
+                incomeBtn.classList.remove('border-primary', 'bg-primary-container/20', 'text-primary');
+                incomeBtn.classList.add('border-outline-variant', 'text-on-surface-variant');
+            }
+
+            currentTab = type;
+        }
+
+        // Save category
+        function saveCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            const desc = document.getElementById('categoryDesc').value.trim();
+
+            if (!name) {
+                alert('请输入分类名称！');
+                return;
+            }
+
+            if (editingId) {
+                // Edit existing
+                const index = categories[currentTab].findIndex(c => c.id === editingId);
+                if (index !== -1) {
+                    categories[currentTab][index] = {
+                        ...categories[currentTab][index],
+                        name,
+                        emoji: selectedEmoji,
+                        desc
+                    };
+                }
+            } else {
+                // Add new
+                const newId = Date.now();
+                categories[currentTab].push({
+                    id: newId,
+                    name,
+                    emoji: selectedEmoji,
+                    desc
+                });
+            }
+
+            localStorage.setItem('categories', JSON.stringify(categories));
+            closeModal();
+            renderCategories();
+            alert(editingId ? '分类已更新！' : '分类已添加！');
+        }
+
+        // Delete category
+        function deleteCategory(id) {
+            deleteId = id;
+            const item = categories[currentTab].find(c => c.id === id);
+            document.getElementById('deleteMessage').textContent = `确定要删除"${item.name}"分类吗？删除后无法恢复。`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            categories[currentTab] = categories[currentTab].filter(c => c.id !== deleteId);
+            localStorage.setItem('categories', JSON.stringify(categories));
+            closeDeleteModal();
+            renderCategories();
+            alert('分类已删除！');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            deleteId = null;
+        }
+    </script>
+</body>
+</html>

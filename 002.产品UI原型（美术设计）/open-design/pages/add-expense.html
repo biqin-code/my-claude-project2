@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>记一笔 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .add-expense-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) 0;
+      margin-bottom: var(--space-4);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 20px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--on-surface);
+    }
+
+    .back-btn:hover {
+      background: var(--surface-container);
+    }
+
+    .page-header-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+
+    .header-spacer { width: 40px; }
+
+    .type-toggle {
+      display: flex;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--space-1);
+      margin-bottom: var(--space-6);
+    }
+
+    .type-toggle-btn {
+      flex: 1;
+      padding: var(--space-3);
+      font-size: var(--text-base);
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--on-surface-variant);
+      transition: all var(--motion-fast) var(--ease-out);
+    }
+
+    .type-toggle-btn.active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .type-toggle-btn:not(.active):hover {
+      color: var(--on-surface);
+    }
+
+    .amount-section {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .amount-label {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-2);
+    }
+
+    .amount-display {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+
+    .amount-display span {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--on-surface-variant);
+    }
+
+    .amount-display.income { color: var(--success); }
+    .amount-display.expense { color: var(--error); }
+
+    .keypad-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    .keypad-btn {
+      height: 60px;
+      font-size: var(--text-xl);
+      font-weight: 500;
+      background: var(--surface);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+      color: var(--on-surface);
+    }
+
+    .keypad-btn:hover {
+      background: var(--surface-container);
+    }
+
+    .keypad-btn:active {
+      background: var(--primary);
+      color: var(--on-primary);
+      transform: scale(0.95);
+    }
+
+    .keypad-btn.action {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: var(--text-sm);
+    }
+
+    .keypad-btn.action:hover {
+      background: var(--primary-hover);
+    }
+
+    .form-section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+
+    .form-section-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-4);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-3);
+    }
+
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+    }
+
+    .category-item:hover {
+      background: var(--surface-low);
+    }
+
+    .category-item.selected {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .category-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: var(--surface-low);
+    }
+
+    .category-item.selected .category-icon {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .category-name {
+      font-size: 11px;
+      color: var(--on-surface-variant);
+      text-align: center;
+    }
+
+    .category-item.selected .category-name {
+      color: var(--on-primary);
+    }
+
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+
+    .payment-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--surface-low);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+    }
+
+    .payment-item:hover {
+      border-color: var(--outline-variant);
+    }
+
+    .payment-item.selected {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    .payment-icon {
+      font-size: 24px;
+    }
+
+    .payment-name {
+      font-size: var(--text-xs);
+      color: var(--on-surface-variant);
+    }
+
+    .payment-item.selected .payment-name {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .date-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      color: var(--on-surface);
+      background: var(--surface-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .note-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      color: var(--on-surface);
+      background: var(--surface-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      resize: none;
+      min-height: 80px;
+    }
+
+    .submit-section {
+      padding: var(--space-4) 0;
+      padding-bottom: calc(var(--space-4) + 80px);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: var(--space-4);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-out);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--elev-3);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .delete-btn {
+      width: 100%;
+      padding: var(--space-3);
+      font-size: var(--text-base);
+      font-weight: 500;
+      background: transparent;
+      color: var(--error);
+      border: 1px solid var(--error);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-top: var(--space-3);
+      display: none;
+    }
+
+    .delete-btn.show {
+      display: block;
+    }
+
+    .delete-btn:hover {
+      background: var(--error-container);
+    }
+
+    .modal-emoji-picker {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: var(--space-2);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .emoji-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .emoji-btn:hover {
+      background: var(--surface);
+    }
+
+    @media (max-width: 380px) {
+      .category-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .payment-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <div style="position:sticky;top:0;z-index:50;background:var(--bg);padding:var(--space-4) var(--space-4) 0;">
+    <div class="add-expense-header">
+      <a href="home.html" class="back-btn">←</a>
+      <span class="page-header-title" id="pageTitle">记一笔</span>
+      <div class="header-spacer"></div>
+    </div>
+  </div>
+
+  <main style="padding:0 var(--space-4) var(--space-4);">
+    <!-- Type Toggle -->
+    <div class="type-toggle">
+      <button type="button" class="type-toggle-btn active" data-type="expense">支出</button>
+      <button type="button" class="type-toggle-btn" data-type="income">收入</button>
+    </div>
+
+    <!-- Amount Display -->
+    <div class="amount-section">
+      <div class="amount-label" id="amountLabel">消费金额</div>
+      <div class="amount-display expense" id="amountDisplay">
+        <span>¥</span><span id="amountValue">0</span>
+      </div>
+    </div>
+
+    <!-- Keypad -->
+    <div class="keypad-section">
+      <div class="keypad" id="keypad"></div>
+    </div>
+
+    <!-- Category Selection -->
+    <div class="form-section">
+      <div class="form-section-title">选择分类</div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="form-section">
+      <div class="form-section-title">支付方式</div>
+      <div class="payment-grid" id="paymentGrid"></div>
+    </div>
+
+    <!-- Date -->
+    <div class="form-section">
+      <div class="form-section-title">日期</div>
+      <input type="date" class="date-input" id="dateInput">
+    </div>
+
+    <!-- Note -->
+    <div class="form-section">
+      <div class="form-section-title">备注（选填）</div>
+      <textarea class="note-input" id="noteInput" placeholder="添加备注..." maxlength="100"></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-section">
+      <button type="button" class="submit-btn" id="submitBtn">保存</button>
+      <button type="button" class="delete-btn" id="deleteBtn">删除记录</button>
+    </div>
+  </main>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">确认删除</h3>
+        <button type="button" class="modal-close" onclick="VelvetApp.hideModal('deleteModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p>确定要删除这条记录吗？此操作无法撤销。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="VelvetApp.hideModal('deleteModal')">取消</button>
+        <button type="button" class="btn btn-primary" style="background:var(--error);" id="confirmDeleteBtn">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // requireAuth disabled for demo
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('edit');
+
+      let currentType = 'expense';
+      let selectedCategory = null;
+      let selectedPayment = null;
+      let editingRecord = null;
+
+      // 初始化
+      const keypad = new VelvetApp.AmountKeypad({
+        container: document.getElementById('keypad'),
+        onChange: (value) => {
+          document.getElementById('amountValue').textContent = value || '0';
+        }
+      });
+
+      document.getElementById('dateInput').value = VelvetApp.formatDate(new Date());
+
+      loadCategories();
+      loadPayments();
+
+      // 加载分类
+      function loadCategories() {
+        const categories = VelvetApp.Auth.getUserCategories();
+        const cats = currentType === 'expense' ? categories.expense : categories.income;
+
+        const grid = document.getElementById('categoryGrid');
+        grid.innerHTML = cats.map(cat => `
+          <div class="category-item" data-id="${cat.id}" data-name="${cat.name}" data-emoji="${cat.emoji}">
+            <div class="category-icon">${cat.emoji}</div>
+            <div class="category-name">${cat.name}</div>
+          </div>
+        `).join('');
+
+        grid.querySelectorAll('.category-item').forEach(item => {
+          item.addEventListener('click', () => {
+            grid.querySelectorAll('.category-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedCategory = {
+              id: item.dataset.id,
+              name: item.dataset.name,
+              emoji: item.dataset.emoji
+            };
+          });
+        });
+      }
+
+      // 加载支付方式
+      function loadPayments() {
+        const grid = document.getElementById('paymentGrid');
+        grid.innerHTML = VelvetApp.PAYMENT_METHODS.map(method => `
+          <div class="payment-item" data-id="${method.id}" data-name="${method.name}">
+            <div class="payment-icon">${method.emoji}</div>
+            <div class="payment-name">${method.name}</div>
+          </div>
+        `).join('');
+
+        grid.querySelectorAll('.payment-item').forEach(item => {
+          item.addEventListener('click', () => {
+            grid.querySelectorAll('.payment-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedPayment = {
+              id: item.dataset.id,
+              name: item.dataset.name
+            };
+          });
+        });
+
+        // 默认选择第一个
+        if (VelvetApp.PAYMENT_METHODS.length > 0) {
+          const first = grid.querySelector('.payment-item');
+          first.click();
+        }
+      }
+
+      // 类型切换
+      document.querySelectorAll('.type-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.type-toggle-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentType = btn.dataset.type;
+
+          const display = document.getElementById('amountDisplay');
+          display.className = 'amount-display ' + currentType;
+
+          const label = document.getElementById('amountLabel');
+          label.textContent = currentType === 'expense' ? '消费金额' : '收入金额';
+
+          selectedCategory = null;
+          loadCategories();
+        });
+      });
+
+      // 提交
+      document.getElementById('submitBtn').addEventListener('click', () => {
+        const amount = keypad.getValue();
+
+        if (amount <= 0) {
+          VelvetApp.showToast('请输入金额', 'warn');
+          return;
+        }
+
+        if (!selectedCategory) {
+          VelvetApp.showToast('请选择分类', 'warn');
+          return;
+        }
+
+        if (!selectedPayment) {
+          VelvetApp.showToast('请选择支付方式', 'warn');
+          return;
+        }
+
+        const record = {
+          id: editingRecord ? editingRecord.id : VelvetApp.generateId(),
+          type: currentType,
+          amount: amount,
+          categoryId: selectedCategory.id,
+          categoryName: selectedCategory.name,
+          categoryEmoji: selectedCategory.emoji,
+          date: document.getElementById('dateInput').value + 'T' + VelvetApp.formatTime(new Date()),
+          paymentMethod: selectedPayment.id,
+          paymentMethodName: selectedPayment.name,
+          note: document.getElementById('noteInput').value.trim()
+        };
+
+        if (editingRecord) {
+          VelvetApp.Auth.updateRecord(record.id, record);
+          VelvetApp.showToast('记录已更新', 'success');
+        } else {
+          VelvetApp.Auth.saveRecord(record);
+          VelvetApp.showToast('记录已保存', 'success');
+        }
+
+        setTimeout(() => {
+          VelvetApp.navigateTo('home.html');
+        }, 500);
+      });
+
+      // 编辑模式
+      if (editId) {
+        document.getElementById('pageTitle').textContent = '编辑记录';
+        const records = VelvetApp.Auth.getUserRecords();
+        editingRecord = records.find(r => r.id === editId);
+
+        if (editingRecord) {
+          document.getElementById('amountDisplay').className = 'amount-display ' + editingRecord.type;
+          currentType = editingRecord.type;
+          document.querySelectorAll('.type-toggle-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.type === editingRecord.type);
+          });
+          document.getElementById('amountLabel').textContent = editingRecord.type === 'expense' ? '消费金额' : '收入金额';
+
+          keypad.setValue(editingRecord.amount.toString());
+          document.getElementById('dateInput').value = VelvetApp.formatDate(editingRecord.date);
+          document.getElementById('noteInput').value = editingRecord.note || '';
+
+          // 选中分类
+          setTimeout(() => {
+            const catItem = document.querySelector(`.category-item[data-id="${editingRecord.categoryId}"]`);
+            if (catItem) catItem.click();
+          }, 100);
+
+          // 选中支付方式
+          setTimeout(() => {
+            const payItem = document.querySelector(`.payment-item[data-id="${editingRecord.paymentMethod}"]`);
+            if (payItem) payItem.click();
+          }, 100);
+
+          document.getElementById('deleteBtn').classList.add('show');
+        }
+      }
+
+      // 删除
+      document.getElementById('deleteBtn').addEventListener('click', () => {
+        VelvetApp.showModal('deleteModal');
+      });
+
+      document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+        if (editingRecord) {
+          VelvetApp.Auth.deleteRecord(editingRecord.id);
+          VelvetApp.hideModal('deleteModal');
+          VelvetApp.showToast('记录已删除', 'success');
+          setTimeout(() => {
+            VelvetApp.navigateTo('home.html');
+          }, 500);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html><html class="light" lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Velvet Ledger - 记一笔</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#fff0f5",
+                    "surface-container": "#ffe8f1",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#fff8f8",
+                    "primary-fixed-dim": "#d3c1d1",
+                    "on-surface": "#2d1323",
+                    "on-surface-variant": "#4b454a",
+                    "on-tertiary-fixed": "#2e0d34",
+                    "primary-container": "#f9e6f6",
+                    "inverse-on-surface": "#ffecf3",
+                    "on-tertiary-fixed-variant": "#5e3963",
+                    "tertiary-fixed-dim": "#e7b7e9",
+                    "surface-container-high": "#ffe0ee",
+                    "on-primary-fixed-variant": "#4f434f",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#cdc4ca",
+                    "surface-bright": "#fff8f8",
+                    "on-secondary-container": "#795873",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed-variant": "#5b3d56",
+                    "tertiary-fixed": "#ffd6ff",
+                    "surface-container-highest": "#ffd8eb",
+                    "secondary-fixed-dim": "#e3bad9",
+                    "background": "#fff8f8",
+                    "secondary-container": "#fed3f3",
+                    "on-secondary-fixed": "#2c1229",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#685a67",
+                    "primary": "#685a67",
+                    "surface-dim": "#fbcee4",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#ffd8eb",
+                    "on-primary-container": "#746673",
+                    "inverse-primary": "#d3c1d1",
+                    "tertiary-container": "#ffe3fd",
+                    "on-primary-fixed": "#221823",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#f0dded",
+                    "secondary-fixed": "#ffd7f4",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#845c88",
+                    "inverse-surface": "#442738",
+                    "tertiary": "#78517c",
+                    "outline": "#7c757a",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#2d1323",
+                    "secondary": "#75546e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "stack-lg": "40px",
+                    "base": "8px",
+                    "gutter": "16px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "title-lg": ["Hanken Grotesk"],
+                    "numeral-xl": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-lg-mobile": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "numeral-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            background-color: #fff8f8;
+            color: #2d1323;
+        }
+        .velvet-card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 24px rgba(243, 201, 232, 0.15);
+            transition: all 0.3s ease;
+        }
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .category-chip.active {
+            background-color: #fed3f3;
+            color: #75546e;
+            transform: scale(1.05);
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #75546e;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top AppBar (Mobile Only) -->
+<header class="md:hidden sticky top-0 z-50 flex justify-between items-center px-container-padding py-base w-full bg-surface">
+<h1 class="font-headline-md text-headline-md font-bold text-secondary">记一笔</h1>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">calendar_today</span>
+<span class="material-symbols-outlined text-primary cursor-pointer">more_vert</span>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar (Desktop Only) -->
+<aside class="hidden md:flex flex-col h-screen p-gutter fixed left-0 top-0 w-64 bg-surface-container-low border-r border-outline-variant">
+<div class="mb-stack-lg flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-secondary">个人财务管家</span>
+<span class="text-label-md text-on-surface-variant opacity-70">清爽理财，智慧生活</span>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg group" href="home.html">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md">首页</span>
+</a>
+
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="records.html">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-body-md">明细</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="budget.html">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body-md">预算</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="categories.html">
+<span class="material-symbols-outlined">category</span>
+<span class="font-body-md">分类管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="profile.html">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md">个人中心</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md">
+<div class="flex items-center gap-3 p-2 bg-surface-container rounded-xl">
+<img alt="Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" data-alt="A portrait of a professional woman with soft, warm lighting in a minimalist office setting. The style is serene and high-end, using a palette of soft orchids and neutral tones to match a personal finance app's branding. The overall mood is calm, restorative, and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1z_emyRH-paVfLe1_oxylF-5QlyNmecV2w3AGDCHm6_4qexEDwFBrdU3HPzOrmC9A-nxR3Q76OquiVPTT6WDipU0gJW7Ao4pJ5oiYJuJ7yF6qdjYcCHoWb8dF-wQ-hw_N3ARbuXKSrOUmzAggRO58sl5IkNz5eg9VTZqBa1Lv2jty5cPTK7NcKD-MqiO-HjicZQzV-UhHFGghnLKV45XKCjgPS1xm5QnFXE1bq0F7Ys6rV9RwHtiapIjV-BUhkwRTqqS-QpjJYA">
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-on-surface">沁</span>
+<span class="text-[10px] text-outline uppercase tracking-wider">生活在于点滴的积累</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center p-container-padding pb-32 md:pb-container-padding md:ml-64">
+<div class="w-full max-w-lg">
+<!-- Entry Card -->
+<section class="velvet-card rounded-2xl p-gutter md:p-stack-md border border-outline-variant/30" style="opacity: 1; transform: translateY(0px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+<div class="text-center mb-stack-md">
+<h2 class="hidden md:block font-headline-md text-headline-md text-secondary mb-2">新增交易</h2>
+<div class="flex justify-center items-baseline gap-1 mt-4">
+<span class="text-title-lg font-title-lg text-secondary opacity-60">¥</span>
+<input autofocus="" class="w-full text-center font-numeral-xl text-numeral-xl bg-transparent border-b-2 border-secondary-container focus:border-secondary transition-all placeholder:text-surface-dim appearance-none" placeholder="0.00" step="0.01" type="number">
+</div>
+</div>
+<!-- Category Type Toggle -->
+<div class="mb-4">
+<div class="flex gap-2 bg-surface-container-low p-1.5 rounded-xl">
+<button id="btn-expense" onclick="switchCategoryType('expense')" class="flex-1 py-2.5 rounded-lg font-label-md text-label-md transition-all duration-300 bg-white text-error shadow-md">
+💸 支出
+</button>
+<button id="btn-income" onclick="switchCategoryType('income')" class="flex-1 py-2.5 rounded-lg font-label-md text-label-md transition-all duration-300 text-on-surface-variant">
+💰 收入
+</button>
+</div>
+</div>
+<!-- Category Grid -->
+<div class="mb-stack-md">
+<label class="block text-label-md text-on-surface-variant mb-3 uppercase tracking-widest font-bold">选择分类</label>
+<div id="categoryGrid" class="grid grid-cols-4 gap-4">
+<!-- Categories will be loaded dynamically -->
+</div>
+</div>
+<!-- Details Form -->
+<div class="space-y-stack-sm">
+<div class="flex flex-col gap-1">
+<label class="text-label-md text-on-surface-variant font-bold uppercase tracking-wider">日期</label>
+<div class="flex items-center gap-3 bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary">calendar_today</span>
+<input class="bg-transparent border-none w-full text-body-md focus:ring-0" type="date" value="2024-05-20">
+</div>
+</div>
+<div id="paymentSection" class="flex flex-col gap-1">
+<label class="text-label-md text-on-surface-variant font-bold uppercase tracking-wider">支付方式</label>
+<div class="flex gap-2 overflow-x-auto pb-2 scroll-hide">
+<button class="payment-chip px-4 py-2 rounded-full border border-outline-variant/50 text-body-md whitespace-nowrap bg-secondary-container text-on-secondary-container font-bold" onclick="selectPayment(this)">微信支付</button>
+<button class="payment-chip px-4 py-2 rounded-full border border-outline-variant/50 text-body-md whitespace-nowrap hover:bg-surface-container-high" onclick="selectPayment(this)">支付宝</button>
+<button class="payment-chip px-4 py-2 rounded-full border border-outline-variant/50 text-body-md whitespace-nowrap hover:bg-surface-container-high" onclick="selectPayment(this)">银行卡</button>
+<button class="payment-chip px-4 py-2 rounded-full border border-outline-variant/50 text-body-md whitespace-nowrap hover:bg-surface-container-high" onclick="selectPayment(this)">现金</button>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-label-md text-on-surface-variant font-bold uppercase tracking-wider">备注</label>
+<textarea class="bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30 text-body-md focus:ring-1 focus:ring-secondary min-h-[80px] resize-none" placeholder="添加备注信息..."></textarea>
+</div>
+</div>
+<!-- Action Button -->
+<div class="mt-stack-lg">
+<button class="w-full py-4 bg-secondary text-white font-title-lg text-title-lg rounded-2xl shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">save</span>
+                            保存
+                        </button>
+</div>
+</section>
+<p class="mt-stack-md text-center text-label-md text-outline italic">
+                    “有节制的财务生活是心灵宁静的基石。”
+                </p>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 md:hidden bg-surface-container-lowest shadow-[0_-4px_20px_rgba(243,201,232,0.15)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-outline p-2 hover:bg-surface-container-high transition-all" href="home.html">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline p-2 hover:bg-surface-container-high transition-all" href="statistics.html">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label-md text-label-md">统计</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2 scale-110 duration-300 ease-out" href="add-expense.html">
+<span class="material-symbols-outlined active-icon">add_circle</span>
+<span class="font-label-md text-label-md">记一笔</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline p-2 hover:bg-surface-container-high transition-all" href="profile.html">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">个人中心</span>
+</a>
+<a class="flex flex-col items-center justify-center text-error p-2 hover:bg-error-container/20 transition-all" href="login.html">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">退出</span>
+</a>
+</nav>
+<script>
+        // Default categories (same as categories.html)
+        const defaultCategories = {
+            income: [
+                { id: 1, name: '工资', emoji: '💼', desc: '每月固定工资收入' },
+                { id: 2, name: '奖金', emoji: '🎁', desc: '年终奖、季度奖等' },
+                { id: 3, name: '兼职', emoji: '💻', desc: '兼职、副业收入' },
+                { id: 4, name: '投资收益', emoji: '📈', desc: '股票、基金收益' },
+                { id: 5, name: '理财收益', emoji: '💰', desc: '银行理财、P2P收益' },
+                { id: 6, name: '红包', emoji: '🧧', desc: '节日红包、转账' },
+                { id: 7, name: '报销', emoji: '📄', desc: '公司报销款项' },
+                { id: 8, name: '租金收入', emoji: '🏠', desc: '房屋出租收入' },
+                { id: 9, name: '返现', emoji: '💳', desc: '信用卡返现、购物返利' },
+                { id: 10, name: '其他收入', emoji: '💵', desc: '其他来源收入' }
+            ],
+            expense: [
+                { id: 101, name: '餐饮', emoji: '🍜', desc: '早午晚餐、外卖' },
+                { id: 102, name: '购物', emoji: '🛍️', desc: '衣服、日用品等' },
+                { id: 103, name: '交通', emoji: '🚇', desc: '地铁、公交、打车' },
+                { id: 104, name: '娱乐', emoji: '🎮', desc: '游戏、电影、KTV' },
+                { id: 105, name: '健身', emoji: '🏋️', desc: '健身房、运动器材' },
+                { id: 106, name: '居住', emoji: '🏠', desc: '房租、水电费' },
+                { id: 107, name: '医疗', emoji: '💊', desc: '看病、买药' },
+                { id: 108, name: '教育', emoji: '📚', desc: '培训、书籍、课程' },
+                { id: 109, name: '通讯', emoji: '📱', desc: '话费、网费' },
+                { id: 110, name: '美容', emoji: '💄', desc: '护肤品、化妆品' },
+                { id: 111, name: '服饰', emoji: '👔', desc: '衣服、鞋子、配饰' },
+                { id: 112, name: '旅游', emoji: '✈️', desc: '旅行、酒店、门票' },
+                { id: 113, name: '社交', emoji: '🎉', desc: '聚会、请客' },
+                { id: 114, name: '宠物', emoji: '🐕', desc: '宠物食品、用品' },
+                { id: 115, name: '汽车', emoji: '🚗', desc: '加油、保养、停车' },
+                { id: 116, name: '家居', emoji: '🛋️', desc: '家具、家电、装修' },
+                { id: 117, name: '礼物', emoji: '🎀', desc: '送人的礼物' },
+                { id: 118, name: '零食', emoji: '🍪', desc: '零食、饮料、水果' },
+                { id: 119, name: '数码', emoji: '💻', desc: '电子产品、软件' },
+                { id: 120, name: '其他支出', emoji: '📦', desc: '其他消费' }
+            ]
+        };
+
+        // Load categories from localStorage or use defaults
+        let categories = JSON.parse(localStorage.getItem('categories')) || defaultCategories;
+        let currentType = 'expense'; // Default to expense
+        let selectedCategory = null;
+
+        // Switch between income and expense
+        function switchCategoryType(type) {
+            currentType = type;
+            const expenseBtn = document.getElementById('btn-expense');
+            const incomeBtn = document.getElementById('btn-income');
+            const paymentSection = document.getElementById('paymentSection');
+
+            if (type === 'expense') {
+                expenseBtn.classList.add('bg-white', 'text-error', 'shadow-md');
+                expenseBtn.classList.remove('text-on-surface-variant');
+                incomeBtn.classList.remove('bg-white', 'text-tertiary', 'shadow-md');
+                incomeBtn.classList.add('text-on-surface-variant');
+                // Show payment section for expense
+                paymentSection.style.display = 'flex';
+            } else {
+                incomeBtn.classList.add('bg-white', 'text-tertiary', 'shadow-md');
+                incomeBtn.classList.remove('text-on-surface-variant');
+                expenseBtn.classList.remove('bg-white', 'text-error', 'shadow-md');
+                expenseBtn.classList.add('text-on-surface-variant');
+                // Hide payment section for income
+                paymentSection.style.display = 'none';
+            }
+
+            renderCategories();
+        }
+
+        // Render categories based on current type
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            const items = categories[currentType];
+
+            grid.innerHTML = items.map(item => `
+                <button class="category-chip flex flex-col items-center gap-1 p-3 rounded-xl transition-all hover:bg-surface-container-high" onclick="selectCategory(this, ${item.id})">
+                    <span class="text-2xl">${item.emoji}</span>
+                    <span class="text-label-md">${item.name}</span>
+                </button>
+            `).join('');
+        }
+
+        // Select a category
+        function selectCategory(el, categoryId) {
+            document.querySelectorAll('.category-chip').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            el.classList.add('active');
+            selectedCategory = categoryId;
+
+            // Interaction feedback
+            el.animate([
+                { transform: 'scale(1)' },
+                { transform: 'scale(0.95)' },
+                { transform: 'scale(1.05)' },
+                { transform: 'scale(1)' }
+            ], { duration: 300 });
+        }
+
+        function selectPayment(el) {
+            document.querySelectorAll('.payment-chip').forEach(btn => {
+                btn.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
+            });
+            el.classList.add('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render initial categories (expense)
+            renderCategories();
+
+            // Add a subtle atmospheric pulse to the main card
+            const card = document.querySelector('.velvet-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+
+
+
+
+</body></html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>个人财务管家 - 明细</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #fff8f8;
+        }
+        .glass-panel {
+            background: rgba(255, 248, 248, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 232, 241, 1);
+        }
+        .ice-card {
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(104, 90, 103, 0.08);
+            border: 1px solid #ffe8f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cdc4ca;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffd7f4",
+                        "on-primary-fixed": "#221823",
+                        "on-tertiary-container": "#845c88",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffd6ff",
+                        "surface": "#fff8f8",
+                        "on-surface-variant": "#4b454a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#f0dded",
+                        "on-tertiary-fixed-variant": "#5e3963",
+                        "on-tertiary-fixed": "#2e0d34",
+                        "on-secondary-fixed-variant": "#5b3d56",
+                        "surface-tint": "#685a67",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#746673",
+                        "surface-container": "#ffe8f1",
+                        "inverse-surface": "#442738",
+                        "surface-dim": "#fbcee4",
+                        "background": "#fff8f8",
+                        "primary-fixed-dim": "#d3c1d1",
+                        "surface-variant": "#ffd8eb",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#7c757a",
+                        "outline-variant": "#cdc4ca",
+                        "on-primary-fixed-variant": "#4f434f",
+                        "inverse-on-surface": "#ffecf3",
+                        "surface-container-low": "#fff0f5",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary": "#75546e",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#ffd8eb",
+                        "surface-container-high": "#ffe0ee",
+                        "tertiary": "#78517c",
+                        "primary": "#685a67",
+                        "on-background": "#2d1323",
+                        "surface-bright": "#fff8f8",
+                        "primary-container": "#f9e6f6",
+                        "on-secondary-container": "#795873",
+                        "secondary-fixed-dim": "#e3bad9",
+                        "secondary-container": "#fed3f3",
+                        "tertiary-fixed-dim": "#e7b7e9",
+                        "tertiary-container": "#ffe3fd",
+                        "on-surface": "#2d1323",
+                        "on-secondary-fixed": "#2c1229",
+                        "inverse-primary": "#d3c1d1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "stack-lg": "40px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "numeral-xl": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "numeral-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-background border-r border-outline-variant/20 p-gutter gap-stack-md z-40">
+<div class="flex flex-col gap-1">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">个人财务管家</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">清爽理财，智慧生活</p>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-low rounded-lg px-4 py-3 transition-all active:scale-95 duration-200" href="home.html">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-body-lg text-body-lg">首页</span>
+</a>
+<a class="flex items-center gap-base bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-bold transition-all active:scale-95 duration-200 shadow-sm" href="records.html">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-body-lg text-body-lg">明细</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-low rounded-lg px-4 py-3 transition-all active:scale-95 duration-200" href="statistics.html">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-lg text-body-lg">统计</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-low rounded-lg px-4 py-3 transition-all active:scale-95 duration-200" href="budget.html">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body-lg text-body-lg">预算</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-low rounded-lg px-4 py-3 transition-all active:scale-95 duration-200" href="categories.html">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-body-lg text-body-lg">分类管理</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant hover:bg-surface-container-low rounded-lg px-4 py-3 transition-all active:scale-95 duration-200" href="profile.html">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-body-lg text-body-lg">个人中心</span>
+</a>
+</nav>
+<div class="mt-auto">
+<a class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all" href="add-expense.html">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-body-lg text-body-lg">记一笔</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 h-screen flex flex-col relative overflow-hidden">
+<!-- TopAppBar (Mobile & Desktop Header) -->
+<header class="flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50 bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h2 class="font-title-lg text-title-lg font-bold text-primary">交易明细</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 w-48 lg:w-64 focus:ring-2 focus:ring-primary/20 text-body-md font-body-md outline-none transition-all" placeholder="搜索备注..." type="text">
+</div>
+<div class="flex items-center gap-2">
+
+<button class="p-2 text-primary hover:text-secondary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Filter & Summary Bar -->
+<section class="px-container-padding py-4 flex flex-col gap-4">
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Date Range Pills -->
+<div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/20">
+<button class="px-4 py-1.5 rounded-md text-on-primary-container bg-primary-container font-medium text-body-md transition-all">本周</button>
+<button class="px-4 py-1.5 rounded-md text-on-surface-variant hover:bg-surface-container-high transition-all text-body-md">本月</button>
+<button class="px-4 py-1.5 rounded-md text-on-surface-variant hover:bg-surface-container-high transition-all text-body-md">近三月</button>
+</div>
+<!-- Select Filters -->
+<div class="flex items-center gap-3 ml-auto">
+<div class="relative inline-block text-left">
+<button class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-outline-variant/30 text-on-surface-variant text-body-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="category">category</span>
+<span class="">全部分类</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="relative inline-block text-left">
+<button class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-outline-variant/30 text-on-surface-variant text-body-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="payments">payments</span>
+<span class="">支付方式</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+<button class="p-2 bg-white rounded-lg border border-outline-variant/30 text-primary hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</div>
+</div>
+<!-- Transaction Summary Card -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="ice-card rounded-xl p-4 flex flex-col gap-1 overflow-hidden relative">
+<div class="absolute -right-4 -top-4 opacity-5 text-primary">
+<span class="material-symbols-outlined text-[80px]" data-icon="account_balance">account_balance</span>
+</div>
+<span class="text-on-surface-variant font-label-md text-label-md">本周支出</span>
+<span class="text-primary font-numeral-xl text-[28px]">¥ 2,450.00</span>
+</div>
+<div class="ice-card rounded-xl p-4 flex flex-col gap-1 overflow-hidden relative">
+<div class="absolute -right-4 -top-4 opacity-5 text-tertiary">
+<span class="material-symbols-outlined text-[80px]" data-icon="trending_up">trending_up</span>
+</div>
+<span class="text-on-surface-variant font-label-md text-label-md">本周收入</span>
+<span class="text-tertiary font-numeral-xl text-[28px]">¥ 10,000.00</span>
+</div>
+<div class="ice-card rounded-xl p-4 flex flex-col gap-1 overflow-hidden relative">
+<div class="absolute -right-4 -top-4 opacity-5 text-secondary">
+<span class="material-symbols-outlined text-[80px]" data-icon="savings">savings</span>
+</div>
+<span class="text-on-surface-variant font-label-md text-label-md">结余</span>
+<span class="text-on-surface font-numeral-xl text-[28px]">¥ 6,450.00</span>
+</div>
+</div>
+</section>
+<!-- Scrollable Transaction List -->
+<section class="flex-1 overflow-y-auto px-container-padding pb-20 custom-scrollbar">
+<div class="flex flex-col gap-stack-md">
+<!-- Day Group -->
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center sticky top-0 py-2 bg-background/80 backdrop-blur-md z-10">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface-variant flex items-center gap-2">
+                            今天 <span class="text-body-md font-normal text-outline">05月24日</span>
+</h3>
+<div class="flex gap-4 text-label-md font-medium">
+<span class="text-outline">支: 342.00</span>
+<span class="text-outline">收: 0.00</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Transaction Row -->
+<div class="ice-card p-4 rounded-xl flex items-center gap-4 hover:border-primary/40 cursor-pointer group transition-all" onclick="showEditModal()">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-title-lg text-body-lg font-semibold">午餐外卖</h4>
+<span class="text-on-surface font-numeral-xl text-[18px]">-¥ 45.00</span>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-medium">餐饮</span>
+<span class="text-outline text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="credit_card">credit_card</span>
+                                            支付宝
+                                        </span>
+</div>
+<span class="text-outline text-label-md group-hover:text-primary transition-colors">编辑</span>
+</div>
+</div>
+</div>
+<!-- Transaction Row -->
+<div class="ice-card p-4 rounded-xl flex items-center gap-4 hover:border-primary/40 cursor-pointer group transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="local_taxi">local_taxi</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-title-lg text-body-lg font-semibold">网约车出行</h4>
+<span class="text-on-surface font-numeral-xl text-[18px]">-¥ 22.00</span>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-medium">交通</span>
+<span class="text-outline text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+                                            余额
+                                        </span>
+</div>
+<span class="text-outline text-label-md group-hover:text-primary transition-colors">编辑</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day Group -->
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center sticky top-0 py-2 bg-background/80 backdrop-blur-md z-10">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface-variant flex items-center gap-2">
+                            昨天 <span class="text-body-md font-normal text-outline">05月23日</span>
+</h3>
+<div class="flex gap-4 text-label-md font-medium">
+<span class="text-outline">支: 1,280.00</span>
+<span class="text-outline">收: 8,500.00</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Transaction Row - Income -->
+<div class="ice-card p-4 rounded-xl flex items-center gap-4 hover:border-primary/40 cursor-pointer group transition-all">
+<div class="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-title-lg text-body-lg font-semibold">5月份工资</h4>
+<span class="text-tertiary font-numeral-xl text-[18px]">+¥ 8,500.00</span>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/10 text-on-tertiary-container text-[11px] font-medium">职业收入</span>
+<span class="text-outline text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="account_balance">account_balance</span>
+                                            工商银行
+                                        </span>
+</div>
+<span class="text-outline text-label-md group-hover:text-primary transition-colors">编辑</span>
+</div>
+</div>
+</div>
+<!-- Transaction Row -->
+<div class="ice-card p-4 rounded-xl flex items-center gap-4 hover:border-primary/40 cursor-pointer group transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-title-lg text-body-lg font-semibold">优衣库夏季新款</h4>
+<span class="text-on-surface font-numeral-xl text-[18px]">-¥ 699.00</span>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-medium">服饰</span>
+<span class="text-outline text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="credit_card">credit_card</span>
+                                            招行信用卡
+                                        </span>
+</div>
+<p class="text-outline text-label-md truncate max-w-[150px]">白色短袖, 蓝色牛仔裤</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day Group -->
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center sticky top-0 py-2 bg-background/80 backdrop-blur-md z-10">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface-variant flex items-center gap-2">
+                            前天 <span class="text-body-md font-normal text-outline">05月22日</span>
+</h3>
+<div class="flex gap-4 text-label-md font-medium">
+<span class="text-outline">支: 42.50</span>
+<span class="text-outline">收: 0.00</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="ice-card p-4 rounded-xl flex items-center gap-4 hover:border-primary/40 cursor-pointer group transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="coffee">coffee</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-title-lg text-body-lg font-semibold">星巴克美式</h4>
+<span class="text-on-surface font-numeral-xl text-[18px]">-¥ 28.00</span>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-medium">餐饮</span>
+<span class="text-outline text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="payments">payments</span>
+                                            微信支付
+                                        </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl flex justify-around items-center px-4 z-50 border-t border-outline-variant/10">
+<button class="flex flex-col items-center gap-0.5 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-medium">首页</span>
+</button>
+<button class="flex flex-col items-center gap-0.5 text-primary">
+<span class="material-symbols-outlined" data-icon="list_alt" data-weight="fill" style="font-variation-settings: &quot;FILL&quot; 1;">list_alt</span>
+<span class="text-[10px] font-bold">明细</span>
+</button>
+<div class="relative -top-4">
+<button class="w-12 h-12 rounded-full bg-gradient-to-tr from-primary to-secondary text-white flex items-center justify-center shadow-lg active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-0.5 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-[10px] font-medium">统计</span>
+</button>
+<a class="flex flex-col items-center gap-0.5 text-on-surface-variant" href="profile.html">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-medium">我的</span>
+</a>
+<a class="flex flex-col items-center gap-0.5 text-error" href="login.html">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-[10px] font-medium">退出</span>
+</a>
+</nav>
+</main>
+<!-- Modal Backdrop (Hidden by default) -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300" id="editModal">
+<div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl scale-95 transition-transform duration-300" id="modalContent">
+<div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md font-bold text-primary">编辑账单</h3>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors" onclick="hideEditModal()">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<!-- Amount Display -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-label-md font-label-md text-on-surface-variant">支出金额</span>
+<input class="text-center font-numeral-xl text-numeral-xl text-primary w-full border-none focus:ring-0 bg-transparent" type="text" value="45.00">
+<div class="h-0.5 w-32 bg-primary rounded-full"></div>
+</div>
+<!-- Form Fields -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4 p-3 rounded-xl bg-surface-container-low">
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+<div class="flex-1">
+<p class="text-label-md text-outline">分类</p>
+<p class="text-body-lg font-semibold">餐饮</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl bg-surface-container-low">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<div class="flex-1">
+<p class="text-label-md text-outline">时间</p>
+<p class="text-body-lg font-semibold">今天 12:30</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-md text-outline ml-1">备注</label>
+<input class="w-full p-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 text-body-lg" placeholder="午餐外卖" type="text">
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-4 mt-2">
+<button class="flex-1 py-4 rounded-2xl bg-error-container text-on-error-container font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+                        删除
+                    </button>
+<button class="flex-[2] py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold hover:shadow-lg active:scale-95 transition-all" onclick="hideEditModal()">
+                        保存修改
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function showEditModal() {
+            const modal = document.getElementById('editModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-95');
+        }
+
+        function hideEditModal() {
+            const modal = document.getElementById('editModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.add('scale-95');
+        }
+
+        // Search highlight micro-interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+            });
+        }
+
+        // Close modal on click outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('editModal');
+            if (e.target === modal) {
+                hideEditModal();
+            }
+        });
+    </script>
+
+
+
+
+</body></html>

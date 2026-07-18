@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - Velvet Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--surface-low) 100%);
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      padding: var(--space-6);
+    }
+
+    .auth-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .auth-logo-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: var(--space-4);
+      box-shadow: var(--elev-3);
+    }
+
+    .auth-logo-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .auth-logo-subtitle {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: var(--elev-2);
+    }
+
+    .auth-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--on-surface);
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .password-strength {
+      height: 4px;
+      background: var(--surface-low);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: var(--space-2);
+    }
+
+    .password-strength-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: all var(--motion-base) var(--ease-out);
+    }
+
+    .strength-weak { width: 33%; background: var(--error); }
+    .strength-medium { width: 66%; background: var(--warn); }
+    .strength-strong { width: 100%; background: var(--success); }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: var(--space-6);
+    }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">💰</div>
+      <h1 class="auth-logo-title">Velvet Ledger</h1>
+      <p class="auth-logo-subtitle">个人财务管家</p>
+    </div>
+
+    <div class="auth-card">
+      <h2 class="auth-title">创建账号</h2>
+
+      <form class="auth-form" id="registerForm">
+        <div class="field">
+          <label for="username">用户名</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="3-20个字符"
+            autocomplete="username"
+            minlength="3"
+            maxlength="20"
+            required
+          >
+          <span class="field-help">支持字母、数字、下划线</span>
+        </div>
+
+        <div class="field">
+          <label for="password">密码</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="至少6位"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+          <div class="password-strength">
+            <div class="password-strength-fill" id="strengthFill"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">确认密码</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="再次输入密码"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <button type="button" class="btn btn-primary btn-lg" style="width:100%;margin-top:var(--space-2);" id="registerBtn">
+          注册
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        已有账号？<a href="login.html">立即登录</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 如果已登录，直接跳转
+      if (VelvetApp.Auth.isLoggedIn()) {
+        VelvetApp.navigateTo('home.html');
+        return;
+      }
+
+      const passwordInput = document.getElementById('password');
+      const strengthFill = document.getElementById('strengthFill');
+
+      // 密码强度检测
+      passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value;
+        strengthFill.className = 'password-strength-fill';
+
+        if (password.length === 0) {
+          strengthFill.style.width = '0';
+        } else if (password.length < 6) {
+          strengthFill.classList.add('strength-weak');
+        } else if (password.length < 10 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password)) {
+          strengthFill.classList.add('strength-medium');
+        } else {
+          strengthFill.classList.add('strength-strong');
+        }
+      });
+
+      document.getElementById('registerBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        try {
+          const username = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value;
+          const confirmPassword = document.getElementById('confirmPassword').value;
+
+          // 验证
+          if (!username || username.length < 3 || username.length > 20) {
+            VelvetApp.showToast('用户名需要3-20个字符', 'error');
+            return;
+          }
+
+          if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            VelvetApp.showToast('用户名只能包含字母、数字和下划线', 'error');
+            return;
+          }
+
+          if (!password || password.length < 6) {
+            VelvetApp.showToast('密码至少需要6位', 'error');
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            VelvetApp.showToast('两次输入的密码不一致', 'error');
+            return;
+          }
+
+          const result = VelvetApp.Auth.register(username, password);
+
+          if (result.success) {
+            VelvetApp.showToast('注册成功，请登录', 'success');
+            setTimeout(() => {
+              VelvetApp.navigateTo('login.html');
+            }, 800);
+          } else {
+            VelvetApp.showToast(result.message || '注册失败', 'error');
+          }
+        } catch (err) {
+          console.error('Registration error:', err);
+          alert('注册出错: ' + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
